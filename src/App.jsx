@@ -1,5 +1,4 @@
 import { BrowserRouter, Routes, Route } from "react-router-dom";
-import Navbar from "./components/Navbar";
 import AuthorList from "./pages/authors/AuthorList";
 import AuthorForm from "./pages/authors/AuthorForm";
 import BookList from "./pages/books/BookList";
@@ -8,7 +7,6 @@ import BookForm from "./pages/books/BookForm";
 function App() {
   return (
     <BrowserRouter>
-      <Navbar />
       <Routes>
         <Route path="/authors" element={<AuthorList />} />
         <Route path="/authors/new" element={<AuthorForm />} />

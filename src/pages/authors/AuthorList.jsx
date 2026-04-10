@@ -1,6 +1,8 @@
 import { useEffect, useState } from "react";
 import { getAllAuthors, deleteAuthor } from "../../services/authorService";
 import { useNavigate } from "react-router-dom";
+import InfoCard from "../../components/InfoCard";
+import "../../components/InfoCard.css";
 
 function AuthorList() {
     const [authors, setAuthors] = useState([]);
@@ -23,38 +25,31 @@ function AuthorList() {
     };
 
     return (
-        <div>
-            <h1>Authors</h1>
-            <button onClick={() => navigate("/authors/new")}>Add author</button>
-            <table>
-                <thead>
-                    <tr>
-                        <th>Name</th>
-                        <th>Surname</th>
-                        <th>Nationality</th>
-                        <th>Birth year</th>
-                        <th>Alive</th>
-                        <th>Actions</th>
-                    </tr>
-                </thead>
-                <tbody>
+        <div className="list-page">
+            <div className="list-page__header">
+                <h1>Authors</h1>
+                <button onClick={() => navigate("/authors/new")}>Add author</button>
+            </div>
+
+            {authors.length === 0 ? (
+                <p className="list-page__empty">No authors available yet.</p>
+            ) : (
+                <div className="list-page__grid">
                     {authors.map((author) => (
-                        <tr key={author.id}>
-                            <td>{author.nombre}</td>
-                            <td>{author.apellido}</td>
-                            <td>{author.nacionalidad}</td>
-                            <td>{author.anioNacimiento}</td>
-                            <td>{author.vivo ? "Yes" : "No"}</td>
-                            <td>
-                                <button onClick={() => navigate(`/authors/edit/${author.id}`)}>
-                                    Edit
-                                </button>
-                                <button onClick={() => handleDelete(author.id)}>Delete</button>
-                            </td>
-                        </tr>
+                        <InfoCard
+                            key={author.id}
+                            title={`${author.nombre} ${author.apellido}`}
+                            fields={[
+                                { label: "Nationality", value: author.nacionalidad || "-" },
+                                { label: "Birth year", value: author.anioNacimiento || "-" },
+                                { label: "Alive", value: author.vivo ? "Yes" : "No" },
+                            ]}
+                            onEdit={() => navigate(`/authors/edit/${author.id}`)}
+                            onDelete={() => handleDelete(author.id)}
+                        />
                     ))}
-                </tbody>
-            </table>
+                </div>
+            )}
         </div>
     );
 }

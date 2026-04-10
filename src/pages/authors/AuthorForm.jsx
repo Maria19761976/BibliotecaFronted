@@ -74,11 +74,11 @@ function AuthorForm() {
                     <input name="nacionalidad" value={author.nacionalidad} onChange={handleChange} />
                 </div>
                 <div>
-                    <label>Anio de nacimiento</label>
+                    <label>Año de nacimiento</label>
                     <input name="anioNacimiento" type="number" value={author.anioNacimiento} onChange={handleChange} />
                 </div>
                 <div>
-                    <label>Vive?</label>
+                    <label>¿Vive?</label>
                     <input name="vivo" type="checkbox" checked={author.vivo} onChange={handleChange} />
                 </div>
                 <button type="submit">{id ? "Actualizar" : "Crear"}</button>

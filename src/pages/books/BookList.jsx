@@ -18,7 +18,7 @@ function BookList() {
     };
 
     const handleDelete = async (id) => {
-        if (window.confirm("Estas seguro de que quieres eliminar este libro?")) {
+        if (window.confirm("¿Estás seguro de que quieres eliminar este libro?")) {
             await deleteBook(id);
             loadBooks();
         }
@@ -32,7 +32,7 @@ function BookList() {
             </div>
 
             {books.length === 0 ? (
-                <p className="list-page__empty">Todavia no hay libros disponibles.</p>
+                <p className="list-page__empty">Todavía no hay libros disponibles.</p>
             ) : (
                 <div className="list-page__grid">
                     {books.map((book) => (
@@ -42,7 +42,7 @@ function BookList() {
                             imageUrl={book.imagen}
                             fields={[
                                 { label: "ISBN", value: book.isbn || "-" },
-                                { label: "Anio", value: book.anioPublicacion || "-" },
+                                { label: "Año", value: book.anioPublicacion || "-" },
                                 {
                                     label: "Autor",
                                     value: `${book.autor?.nombre || ""} ${book.autor?.apellido || ""}`.trim() || "-",

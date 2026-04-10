@@ -77,7 +77,7 @@ function BookForm() {
             {message && <p>{message}</p>}
             <form onSubmit={handleSubmit}>
                 <div>
-                    <label>Titulo</label>
+                    <label>Título</label>
                     <input name="titulo" value={book.titulo} onChange={handleChange} />
                 </div>
                 <div>
@@ -85,7 +85,7 @@ function BookForm() {
                     <input name="isbn" value={book.isbn} onChange={handleChange} />
                 </div>
                 <div>
-                    <label>Anio de publicacion</label>
+                    <label>Año de publicación</label>
                     <input name="anioPublicacion" type="number" value={book.anioPublicacion} onChange={handleChange} />
                 </div>
                 <div>

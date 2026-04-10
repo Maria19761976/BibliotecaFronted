@@ -13,8 +13,8 @@ function AuthorList() {
     }, []);
 
     const loadAuthors = async () => {
-        const response = await getAllAuthors();
-        setAuthors(response.data);
+        const authors = await getAllAuthors();
+        setAuthors(authors);
     };
 
     const handleDelete = async (id) => {

@@ -24,13 +24,12 @@ function BookForm() {
     }, [id]);
 
     const loadAuthors = async () => {
-        const response = await getAllAuthors();
-        setAuthors(response.data);
+        const authors = await getAllAuthors();
+        setAuthors(authors);
     };
 
     const loadBook = async () => {
-        const response = await getBookById(id);
-        const data = response.data;
+        const data = await getBookById(id);
         setBook({
             titulo: data.titulo,
             isbn: data.isbn,

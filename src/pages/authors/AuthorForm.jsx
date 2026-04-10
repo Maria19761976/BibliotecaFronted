@@ -21,8 +21,8 @@ function AuthorForm() {
     }, [id]);
 
     const loadAuthor = async () => {
-        const response = await getAuthorById(id);
-        setAuthor(response.data);
+        const author = await getAuthorById(id);
+        setAuthor(author);
     };
 
     const handleChange = (e) => {

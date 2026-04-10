@@ -13,8 +13,8 @@ function BookList() {
     }, []);
 
     const loadBooks = async () => {
-        const response = await getAllBooks();
-        setBooks(response.data);
+        const books = await getAllBooks();
+        setBooks(books);
     };
 
     const handleDelete = async (id) => {

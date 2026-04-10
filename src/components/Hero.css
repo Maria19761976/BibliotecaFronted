@@ -32,3 +32,13 @@
   border-radius: 20px;
   font-size: 14px;
 }
+
+@media (max-width: 768px) {
+  .hero {
+    padding: 24px 0;
+  }
+
+  .hero h2 {
+    font-size: 36px;
+  }
+}

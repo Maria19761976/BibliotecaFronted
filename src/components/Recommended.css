@@ -28,3 +28,14 @@
   margin-top: 8px;
   font-size: 14px;
 }
+
+@media (max-width: 768px) {
+  .recommended {
+    padding: 24px 0;
+  }
+
+  .list {
+    overflow-x: auto;
+    padding-bottom: 8px;
+  }
+}

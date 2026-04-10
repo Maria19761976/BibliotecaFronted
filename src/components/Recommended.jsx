@@ -4,7 +4,7 @@ export default function Recommended() {
   const books = [
     'Estructuras de la Realidad',
     'El Origen del Comercio',
-    'Visiones Perifericas',
+    'Visiones Periféricas',
     'Ecos del Invierno',
     'Espacio Urbano'
   ]

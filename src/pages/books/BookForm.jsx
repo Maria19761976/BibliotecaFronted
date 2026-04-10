@@ -20,41 +20,39 @@ function BookForm() {
     });
 
     useEffect(() => {
-        loadAuthors();
-        if (id) {
-            loadBook();
-        }
+        const loadData = async () => {
+            try {
+                setFetching(true);
+
+                const [authorsData, bookData] = await Promise.all([
+                    getAllAuthors(),
+                    id ? getBookById(id) : Promise.resolve(null),
+                ]);
+
+                setAuthors(authorsData);
+
+                if (bookData) {
+                    setBook({
+                        title: bookData.title || "",
+                        ISBN: bookData.ISBN || "",
+                        publicationYear: bookData.publicationYear || "",
+                        image: bookData.image || "",
+                        authorId: bookData.author?.id || "",
+                    });
+                }
+            } catch (error) {
+                setMessage(
+                    id
+                        ? "No se pudo cargar la información del libro."
+                        : "No encontramos la información de los autores."
+                );
+            } finally {
+                setFetching(false);
+            }
+        };
+
+        loadData();
     }, [id]);
-
-    const loadAuthors = async () => {
-        try{
-            setFetching(true);
-            const authors = await getAllAuthors();
-            setAuthors(authors);
-        } catch (error){
-            setMessage("No encontramos la información de los autores");
-        } finally {
-            setFetching(false)
-        }
-    };
-
-    const loadBook = async () => {
-        try{
-            setFetching(true);
-            const data = await getBookById(id);
-            setBook({
-                title: data.title,
-                ISBN: data.ISBN,
-                publicationYear: data.publicationYear,
-                image: data.image,
-                authorId: data.author?.id || "",
-            });
-        } catch (error) {
-            setMessage("No se pudo cargar la información del libro")
-        } finally {
-            setFetching(false);
-        }
-    };
 
     const handleChange = (event) => {
         const { name, value } = event.target;
@@ -85,55 +83,141 @@ function BookForm() {
                 await createBook(bookPayload);
                 setMessage("Libro creado correctamente.");
             }
+
             setTimeout(() => navigate("/books"), 1500);
         } catch (error) {
             setMessage("Error al guardar el libro.");
-        } finally{
+        } finally {
             setLoading(false);
         }
     };
 
-    if(fetching) return <p>Cargando los datos de los libros..</p>
+    if (fetching) {
+        return (
+            <div className="mx-auto flex min-h-[40vh] max-w-3xl items-center justify-center px-4 py-10">
+                <div className="rounded-3xl border border-slate-200 bg-white/85 px-8 py-10 text-center shadow-sm">
+                    <p className="text-sm font-medium uppercase tracking-[0.2em] text-emerald-700">Libros</p>
+                    <p className="mt-2 text-slate-600">Cargando datos del libro...</p>
+                </div>
+            </div>
+        );
+    }
 
     return (
-        <div>
-            <h1>{id ? "Editar libro" : "Nuevo libro"}</h1>
-            {message && <p>{message}</p>}
-            <form onSubmit={handleSubmit}>
-                <fieldset disabled={loading} style={{ border: 'none', padding: 0 }}>
-                    <div>
-                        <label>Título</label>
-                        <input name="title" value={book.title} onChange={handleChange} />
+        <div className="mx-auto max-w-3xl px-4 py-8 sm:px-0">
+            <section className="rounded-3xl border border-slate-200 bg-white/85 p-6 shadow-sm backdrop-blur sm:p-8">
+                <div className="space-y-2">
+                    <p className="text-sm font-medium uppercase tracking-[0.2em] text-emerald-700">Libros</p>
+                    <h1 className="text-3xl font-semibold tracking-tight text-slate-900">
+                        {id ? "Editar libro" : "Nuevo libro"}
+                    </h1>
+                    <p className="text-sm text-slate-600">
+                        Completa la información del libro para guardarlo en la biblioteca.
+                    </p>
+                </div>
+
+                {message && (
+                    <div className="mt-6 rounded-2xl border border-slate-200 bg-slate-50 px-4 py-3 text-sm text-slate-700">
+                        {message}
                     </div>
-                    <div>
-                        <label>ISBN</label>
-                        <input name="ISBN" value={book.ISBN} onChange={handleChange} />
-                    </div>
-                    <div>
-                        <label>Año de publicación</label>
-                        <input name="publicationYear" type="number" value={book.publicationYear} onChange={handleChange} />
-                    </div>
-                    <div>
-                        <label>URL de la imagen</label>
-                        <input name="image" value={book.image} onChange={handleChange} />
-                    </div>
-                    <div>
-                        <label>Autor</label>
-                        <select name="autorId" value={book.authorId} onChange={handleChange}>
-                            <option value="">Selecciona un autor</option>
-                            {authors.map((author) => (
-                                <option key={author.id} value={author.id}>
-                                    {author.name} {author.surname}
-                                </option>
-                            ))}
-                        </select>
-                    </div>
-                    <button type="submit">
-                        {loading ? "Guardando..." :(id ? "Actualizar" : "Crear")}
-                    </button>
-                    <button type="button" onClick={() => navigate("/books")}>Cancelar</button>
-                </fieldset>
-            </form>
+                )}
+
+                <form onSubmit={handleSubmit} className="mt-6">
+                    <fieldset disabled={loading} className="grid gap-5 border-0 p-0">
+                        <div className="grid gap-5 md:grid-cols-2">
+                            <div className="space-y-2 md:col-span-2">
+                                <label htmlFor="title" className="text-sm font-medium text-slate-700">
+                                    Título
+                                </label>
+                                <input
+                                    id="title"
+                                    name="title"
+                                    value={book.title}
+                                    onChange={handleChange}
+                                    className="w-full rounded-2xl border border-slate-200 bg-white px-4 py-3 text-slate-900 outline-none transition placeholder:text-slate-400 focus:border-emerald-600 focus:ring-4 focus:ring-emerald-600/10 disabled:cursor-not-allowed disabled:bg-slate-100"
+                                />
+                            </div>
+
+                            <div className="space-y-2">
+                                <label htmlFor="ISBN" className="text-sm font-medium text-slate-700">
+                                    ISBN
+                                </label>
+                                <input
+                                    id="ISBN"
+                                    name="ISBN"
+                                    value={book.ISBN}
+                                    onChange={handleChange}
+                                    className="w-full rounded-2xl border border-slate-200 bg-white px-4 py-3 text-slate-900 outline-none transition placeholder:text-slate-400 focus:border-emerald-600 focus:ring-4 focus:ring-emerald-600/10 disabled:cursor-not-allowed disabled:bg-slate-100"
+                                />
+                            </div>
+
+                            <div className="space-y-2">
+                                <label htmlFor="publicationYear" className="text-sm font-medium text-slate-700">
+                                    Año de publicación
+                                </label>
+                                <input
+                                    id="publicationYear"
+                                    name="publicationYear"
+                                    type="number"
+                                    value={book.publicationYear}
+                                    onChange={handleChange}
+                                    className="w-full rounded-2xl border border-slate-200 bg-white px-4 py-3 text-slate-900 outline-none transition placeholder:text-slate-400 focus:border-emerald-600 focus:ring-4 focus:ring-emerald-600/10 disabled:cursor-not-allowed disabled:bg-slate-100"
+                                />
+                            </div>
+                        </div>
+
+                        <div className="space-y-2">
+                            <label htmlFor="image" className="text-sm font-medium text-slate-700">
+                                URL de la imagen
+                            </label>
+                            <input
+                                id="image"
+                                name="image"
+                                value={book.image}
+                                onChange={handleChange}
+                                className="w-full rounded-2xl border border-slate-200 bg-white px-4 py-3 text-slate-900 outline-none transition placeholder:text-slate-400 focus:border-emerald-600 focus:ring-4 focus:ring-emerald-600/10 disabled:cursor-not-allowed disabled:bg-slate-100"
+                            />
+                        </div>
+
+                        <div className="space-y-2">
+                            <label htmlFor="authorId" className="text-sm font-medium text-slate-700">
+                                Autor
+                            </label>
+                            <select
+                                id="authorId"
+                                name="authorId"
+                                value={book.authorId}
+                                onChange={handleChange}
+                                className="w-full rounded-2xl border border-slate-200 bg-white px-4 py-3 text-slate-900 outline-none transition placeholder:text-slate-400 focus:border-emerald-600 focus:ring-4 focus:ring-emerald-600/10 disabled:cursor-not-allowed disabled:bg-slate-100"
+                            >
+                                <option value="">Selecciona un autor</option>
+                                {authors.map((author) => (
+                                    <option key={author.id} value={author.id}>
+                                        {author.name} {author.surname}
+                                    </option>
+                                ))}
+                            </select>
+                        </div>
+
+                        <div className="flex flex-col gap-3 pt-2 sm:flex-row">
+                            <button
+                                type="submit"
+                                disabled={loading}
+                                className="inline-flex items-center justify-center rounded-2xl bg-emerald-700 px-5 py-3 font-medium text-white transition-colors hover:bg-emerald-800 disabled:cursor-not-allowed disabled:bg-emerald-400"
+                            >
+                                {loading ? "Guardando..." : id ? "Actualizar" : "Crear"}
+                            </button>
+                            <button
+                                type="button"
+                                onClick={() => navigate("/books")}
+                                className="inline-flex items-center justify-center rounded-2xl border border-slate-200 bg-white px-5 py-3 font-medium text-slate-700 transition-colors hover:border-slate-300 hover:bg-slate-50"
+                            >
+                                Cancelar
+                            </button>
+                        </div>
+                    </fieldset>
+                </form>
+            </section>
         </div>
     );
 }

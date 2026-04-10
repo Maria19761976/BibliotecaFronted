@@ -8,6 +8,9 @@ function BookForm() {
     const { id } = useParams();
     const [message, setMessage] = useState("");
     const [authors, setAuthors] = useState([]);
+    const [loading, setLoading] = useState(false);
+    const [fetching, setFetching] = useState(false);
+
     const [book, setBook] = useState({
         title: "",
         ISBN: "",
@@ -24,19 +27,33 @@ function BookForm() {
     }, [id]);
 
     const loadAuthors = async () => {
-        const authors = await getAllAuthors();
-        setAuthors(authors);
+        try{
+            setFetching(true);
+            const authors = await getAllAuthors();
+            setAuthors(authors);
+        } catch (error){
+            setMessage("No encontramos la información de los autores");
+        } finally {
+            setFetching(false)
+        }
     };
 
     const loadBook = async () => {
-        const data = await getBookById(id);
-        setBook({
-            title: data.title,
-            ISBN: data.ISBN,
-            publicationYear: data.publicationYear,
-            image: data.image,
-            authorId: data.author?.id || "",
-        });
+        try{
+            setFetching(true);
+            const data = await getBookById(id);
+            setBook({
+                title: data.title,
+                ISBN: data.ISBN,
+                publicationYear: data.publicationYear,
+                image: data.image,
+                authorId: data.author?.id || "",
+            });
+        } catch (error) {
+            setMessage("No se pudo cargar la información del libro")
+        } finally {
+            setFetching(false);
+        }
     };
 
     const handleChange = (event) => {
@@ -58,6 +75,9 @@ function BookForm() {
         };
 
         try {
+            setLoading(true);
+            setMessage("");
+
             if (id) {
                 await updateBook(id, bookPayload);
                 setMessage("Libro actualizado correctamente.");
@@ -68,43 +88,51 @@ function BookForm() {
             setTimeout(() => navigate("/books"), 1500);
         } catch (error) {
             setMessage("Error al guardar el libro.");
+        } finally{
+            setLoading(false);
         }
     };
+
+    if(fetching) return <p>Cargando los datos de los libros..</p>
 
     return (
         <div>
             <h1>{id ? "Editar libro" : "Nuevo libro"}</h1>
             {message && <p>{message}</p>}
             <form onSubmit={handleSubmit}>
-                <div>
-                    <label>Título</label>
-                    <input name="title" value={book.title} onChange={handleChange} />
-                </div>
-                <div>
-                    <label>ISBN</label>
-                    <input name="ISBN" value={book.ISBN} onChange={handleChange} />
-                </div>
-                <div>
-                    <label>Año de publicación</label>
-                    <input name="publicationYear" type="number" value={book.publicationYear} onChange={handleChange} />
-                </div>
-                <div>
-                    <label>URL de la imagen</label>
-                    <input name="image" value={book.image} onChange={handleChange} />
-                </div>
-                <div>
-                    <label>Autor</label>
-                    <select name="autorId" value={book.autorId} onChange={handleChange}>
-                        <option value="">Selecciona un autor</option>
-                        {authors.map((author) => (
-                            <option key={author.id} value={author.id}>
-                                {author.name} {author.surname}
-                            </option>
-                        ))}
-                    </select>
-                </div>
-                <button type="submit">{id ? "Actualizar" : "Crear"}</button>
-                <button type="button" onClick={() => navigate("/books")}>Cancelar</button>
+                <fieldset disabled={loading} style={{ border: 'none', padding: 0 }}>
+                    <div>
+                        <label>Título</label>
+                        <input name="title" value={book.title} onChange={handleChange} />
+                    </div>
+                    <div>
+                        <label>ISBN</label>
+                        <input name="ISBN" value={book.ISBN} onChange={handleChange} />
+                    </div>
+                    <div>
+                        <label>Año de publicación</label>
+                        <input name="publicationYear" type="number" value={book.publicationYear} onChange={handleChange} />
+                    </div>
+                    <div>
+                        <label>URL de la imagen</label>
+                        <input name="image" value={book.image} onChange={handleChange} />
+                    </div>
+                    <div>
+                        <label>Autor</label>
+                        <select name="autorId" value={book.authorId} onChange={handleChange}>
+                            <option value="">Selecciona un autor</option>
+                            {authors.map((author) => (
+                                <option key={author.id} value={author.id}>
+                                    {author.name} {author.surname}
+                                </option>
+                            ))}
+                        </select>
+                    </div>
+                    <button type="submit">
+                        {loading ? "Guardando..." :(id ? "Actualizar" : "Crear")}
+                    </button>
+                    <button type="button" onClick={() => navigate("/books")}>Cancelar</button>
+                </fieldset>
             </form>
         </div>
     );

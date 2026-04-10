@@ -13,39 +13,49 @@ function BookList() {
     }, []);
 
     const loadBooks = async () => {
-        const books = await getAllBooks();
-        setBooks(books);
+        try {
+            const response = await getAllBooks();
+            setBooks(Array.isArray(response) ? response : []);
+        } catch (error) {
+            console.error("Error loading books:", error);
+            setBooks([]);
+        }
     };
 
     const handleDelete = async (id) => {
-        if (window.confirm("¿Estás seguro de que quieres eliminar este libro?")) {
-            await deleteBook(id);
-            loadBooks();
+        if (window.confirm("Are you sure you want to delete this book?")) {
+            try {
+                await deleteBook(id);
+                loadBooks();
+            } catch (error) {
+                console.error("Error deleting book:", error);
+            }
         }
     };
 
     return (
         <div className="list-page">
             <div className="list-page__header">
-                <h1>Libros</h1>
-                <button onClick={() => navigate("/books/new")}>Agregar libro</button>
+                <h1>Books</h1>
+                <button onClick={() => navigate("/books/new")}>Add book</button>
             </div>
 
             {books.length === 0 ? (
-                <p className="list-page__empty">Todavía no hay libros disponibles.</p>
+                <p className="list-page__empty">No books available yet.</p>
             ) : (
                 <div className="list-page__grid">
                     {books.map((book) => (
                         <InfoCard
                             key={book.id}
-                            title={book.titulo}
-                            imageUrl={book.imagen}
+                            title={book.title}
+                            imageUrl={book.image}
                             fields={[
-                                { label: "ISBN", value: book.isbn || "-" },
-                                { label: "Año", value: book.anioPublicacion || "-" },
+                                { label: "ISBN", value: book.ISBN || "-" },
+                                { label: "Year", value: book.publicationYear || "-" },
                                 {
-                                    label: "Autor",
-                                    value: `${book.autor?.nombre || ""} ${book.autor?.apellido || ""}`.trim() || "-",
+                                    label: "Author",
+                                    // Usamos author (con h) que es como viene en tu JSON de Tolkien
+                                    value: `${book.author?.name || ""} ${book.author?.surname || ""}`.trim() || "-",
                                 },
                             ]}
                             onEdit={() => navigate(`/books/edit/${book.id}`)}

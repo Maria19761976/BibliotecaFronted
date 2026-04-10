@@ -41,12 +41,12 @@ function BookList() {
                     {books.map((book) => (
                         <tr key={book.id}>
                             <td>
-                                <img src={book.imagen} alt={book.titulo} width="50" />
+                                <img src={book.image} alt={book.title} width="50" />
                             </td>
-                            <td>{book.titulo}</td>
-                            <td>{book.isbn}</td>
-                            <td>{book.anioPublicacion}</td>
-                            <td>{book.autor?.nombre} {book.autor?.apellido}</td>
+                            <td>{book.title}</td>
+                            <td>{book.ISBN}</td>
+                            <td>{book.publicationYear}</td>
+                            <td>{book.author?.name} {book.name?.surname}</td>
                             <td>
                                 <button onClick={() => navigate(`/books/edit/${book.id}`)}>Edit</button>
                                 <button onClick={() => handleDelete(book.id)}>Delete</button>

@@ -2,8 +2,23 @@ import axios from "axios";
 
 const API_URL = "http://localhost:8080/books";
 
-export const getAllBooks = () => axios.get(API_URL);
-export const getBookById = (id) => axios.get(`${API_URL}/${id}`);
-export const createBook = (book) => axios.post(API_URL, book);
-export const updateBook = (id, book) => axios.put(`${API_URL}/${id}`, book);
-export const deleteBook = (id) => axios.delete(`${API_URL}/${id}`);
+export const getAllBooks = async() => {
+    const response = await axios.get(API_URL);
+    return response.data;
+};
+export const getBookById = async(id) => {
+    const response = await axios.get(`${API_URL}/${id}`);
+    return response.data;
+};
+export const createBook = async(book) => {
+    const response = await axios.post(API_URL, book);
+    return response.data;
+};
+export const updateBook = async(id, book) => {
+    const response = await axios.put(`${API_URL}/${id}`, book);
+    return response.data;
+};
+export const deleteBook = async(id) => {
+    const response = await axios.delete(`${API_URL}/${id}`);
+    return response.data;
+};

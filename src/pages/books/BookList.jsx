@@ -1,6 +1,8 @@
 import { useEffect, useState } from "react";
 import { getAllBooks, deleteBook } from "../../services/bookService";
 import { useNavigate } from "react-router-dom";
+import InfoCard from "../../components/InfoCard";
+import "../../components/InfoCard.css";
 
 function BookList() {
     const [books, setBooks] = useState([]);
@@ -23,38 +25,35 @@ function BookList() {
     };
 
     return (
-        <div>
-            <h1>Books</h1>
-            <button onClick={() => navigate("/books/new")}>Add book</button>
-            <table>
-                <thead>
-                    <tr>
-                        <th>Image</th>
-                        <th>Title</th>
-                        <th>ISBN</th>
-                        <th>Year</th>
-                        <th>Author</th>
-                        <th>Actions</th>
-                    </tr>
-                </thead>
-                <tbody>
+        <div className="list-page">
+            <div className="list-page__header">
+                <h1>Books</h1>
+                <button onClick={() => navigate("/books/new")}>Add book</button>
+            </div>
+
+            {books.length === 0 ? (
+                <p className="list-page__empty">No books available yet.</p>
+            ) : (
+                <div className="list-page__grid">
                     {books.map((book) => (
-                        <tr key={book.id}>
-                            <td>
-                                <img src={book.imagen} alt={book.titulo} width="50" />
-                            </td>
-                            <td>{book.titulo}</td>
-                            <td>{book.isbn}</td>
-                            <td>{book.anioPublicacion}</td>
-                            <td>{book.autor?.nombre} {book.autor?.apellido}</td>
-                            <td>
-                                <button onClick={() => navigate(`/books/edit/${book.id}`)}>Edit</button>
-                                <button onClick={() => handleDelete(book.id)}>Delete</button>
-                            </td>
-                        </tr>
+                        <InfoCard
+                            key={book.id}
+                            title={book.titulo}
+                            imageUrl={book.imagen}
+                            fields={[
+                                { label: "ISBN", value: book.isbn || "-" },
+                                { label: "Year", value: book.anioPublicacion || "-" },
+                                {
+                                    label: "Author",
+                                    value: `${book.autor?.nombre || ""} ${book.autor?.apellido || ""}`.trim() || "-",
+                                },
+                            ]}
+                            onEdit={() => navigate(`/books/edit/${book.id}`)}
+                            onDelete={() => handleDelete(book.id)}
+                        />
                     ))}
-                </tbody>
-            </table>
+                </div>
+            )}
         </div>
     );
 }

@@ -105,7 +105,8 @@ function BookForm() {
 
     return (
         <div className="mx-auto max-w-3xl px-4 py-8 sm:px-0">
-            <section className="rounded-3xl border border-slate-200 bg-white/85 p-6 shadow-sm backdrop-blur sm:p-8">
+            <section className="relative overflow-hidden rounded-3xl border border-slate-200 bg-white/85 p-6 shadow-sm backdrop-blur sm:p-8">
+                <div className="absolute inset-x-0 top-0 h-1 bg-gradient-to-r from-emerald-500 via-emerald-600 to-teal-500" />
                 <div className="space-y-2">
                     <p className="text-sm font-medium uppercase tracking-[0.2em] text-emerald-700">Libros</p>
                     <h1 className="text-3xl font-semibold tracking-tight text-slate-900">
@@ -117,7 +118,7 @@ function BookForm() {
                 </div>
 
                 {message && (
-                    <div className="mt-6 rounded-2xl border border-slate-200 bg-slate-50 px-4 py-3 text-sm text-slate-700">
+                    <div className="mt-6 rounded-2xl border border-emerald-100 bg-emerald-50 px-4 py-3 text-sm text-emerald-900">
                         {message}
                     </div>
                 )}
@@ -199,18 +200,18 @@ function BookForm() {
                             </select>
                         </div>
 
-                        <div className="flex flex-col gap-3 pt-2 sm:flex-row">
+                        <div className="flex flex-col gap-3 pt-2 sm:flex-row sm:justify-end">
                             <button
                                 type="submit"
                                 disabled={loading}
-                                className="inline-flex items-center justify-center rounded-2xl bg-emerald-700 px-5 py-3 font-medium text-white transition-colors hover:bg-emerald-800 disabled:cursor-not-allowed disabled:bg-emerald-400"
+                                className="inline-flex items-center justify-center rounded-2xl bg-emerald-700 px-5 py-3 font-medium text-white transition-all hover:-translate-y-0.5 hover:bg-emerald-800 disabled:cursor-not-allowed disabled:bg-emerald-400"
                             >
                                 {loading ? "Guardando..." : id ? "Actualizar" : "Crear"}
                             </button>
                             <button
                                 type="button"
                                 onClick={() => navigate("/books")}
-                                className="inline-flex items-center justify-center rounded-2xl border border-slate-200 bg-white px-5 py-3 font-medium text-slate-700 transition-colors hover:border-slate-300 hover:bg-slate-50"
+                                className="inline-flex items-center justify-center rounded-2xl border border-slate-200 bg-white px-5 py-3 font-medium text-slate-700 transition-all hover:-translate-y-0.5 hover:border-slate-300 hover:bg-slate-50"
                             >
                                 Cancelar
                             </button>

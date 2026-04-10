@@ -18,7 +18,7 @@ function AuthorList() {
     };
 
     const handleDelete = async (id) => {
-        if (window.confirm("Are you sure you want to delete this author?")) {
+        if (window.confirm("Estas seguro de que quieres eliminar este autor?")) {
             await deleteAuthor(id);
             loadAuthors();
         }
@@ -27,12 +27,12 @@ function AuthorList() {
     return (
         <div className="list-page">
             <div className="list-page__header">
-                <h1>Authors</h1>
-                <button onClick={() => navigate("/authors/new")}>Add author</button>
+                <h1>Autores</h1>
+                <button onClick={() => navigate("/authors/new")}>Agregar autor</button>
             </div>
 
             {authors.length === 0 ? (
-                <p className="list-page__empty">No authors available yet.</p>
+                <p className="list-page__empty">Todavia no hay autores disponibles.</p>
             ) : (
                 <div className="list-page__grid">
                     {authors.map((author) => (
@@ -40,9 +40,9 @@ function AuthorList() {
                             key={author.id}
                             title={`${author.nombre} ${author.apellido}`}
                             fields={[
-                                { label: "Nationality", value: author.nacionalidad || "-" },
-                                { label: "Birth year", value: author.anioNacimiento || "-" },
-                                { label: "Alive", value: author.vivo ? "Yes" : "No" },
+                                { label: "Nacionalidad", value: author.nacionalidad || "-" },
+                                { label: "Anio de nacimiento", value: author.anioNacimiento || "-" },
+                                { label: "Vive", value: author.vivo ? "Si" : "No" },
                             ]}
                             onEdit={() => navigate(`/authors/edit/${author.id}`)}
                             onDelete={() => handleDelete(author.id)}

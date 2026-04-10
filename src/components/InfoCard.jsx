@@ -7,7 +7,7 @@ function InfoCard({ title, imageUrl, fields = [], onEdit, onDelete }) {
                 <img className="info-card__image" src={imageUrl} alt={title} />
             ) : (
                 <div className="info-card__image info-card__image--placeholder">
-                    No image
+                    Sin imagen
                 </div>
             )}
 
@@ -24,10 +24,10 @@ function InfoCard({ title, imageUrl, fields = [], onEdit, onDelete }) {
 
             <div className="info-card__actions">
                 <button type="button" onClick={onEdit}>
-                    Edit
+                    Editar
                 </button>
                 <button type="button" onClick={onDelete}>
-                    Delete
+                    Eliminar
                 </button>
             </div>
         </article>

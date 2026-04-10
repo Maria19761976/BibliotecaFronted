@@ -36,12 +36,18 @@ function AuthorForm() {
             setMessage("Por favor rellena todos los campos.");
             return;
         }
+
+        const authorPayload = {
+            ...author,
+            anioNacimiento: Number(author.anioNacimiento),
+        };
+
         try {
             if (id) {
-                await updateAuthor(id, author);
+                await updateAuthor(id, authorPayload);
                 setMessage("Autor actualizado correctamente.");
             } else {
-                await createAuthor(author);
+                await createAuthor(authorPayload);
                 setMessage("Autor creado correctamente.");
             }
             setTimeout(() => navigate("/authors"), 1500);
@@ -68,11 +74,11 @@ function AuthorForm() {
                     <input name="nacionalidad" value={author.nacionalidad} onChange={handleChange} />
                 </div>
                 <div>
-                    <label>Año de nacimiento</label>
+                    <label>Anio de nacimiento</label>
                     <input name="anioNacimiento" type="number" value={author.anioNacimiento} onChange={handleChange} />
                 </div>
                 <div>
-                    <label>¿Vivo?</label>
+                    <label>Vive?</label>
                     <input name="vivo" type="checkbox" checked={author.vivo} onChange={handleChange} />
                 </div>
                 <button type="submit">{id ? "Actualizar" : "Crear"}</button>

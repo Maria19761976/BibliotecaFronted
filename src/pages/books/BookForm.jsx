@@ -47,30 +47,37 @@ function BookForm() {
     const handleSubmit = async (e) => {
         e.preventDefault();
         if (!book.titulo || !book.isbn || !book.anioPublicacion || !book.autorId) {
-            setMessage("Please fill in all fields.");
+            setMessage("Por favor rellena todos los campos.");
             return;
         }
+
+        const bookPayload = {
+            ...book,
+            anioPublicacion: Number(book.anioPublicacion),
+            autorId: Number(book.autorId),
+        };
+
         try {
             if (id) {
-                await updateBook(id, book);
-                setMessage("Book updated successfully.");
+                await updateBook(id, bookPayload);
+                setMessage("Libro actualizado correctamente.");
             } else {
-                await createBook(book);
-                setMessage("Book created successfully.");
+                await createBook(bookPayload);
+                setMessage("Libro creado correctamente.");
             }
             setTimeout(() => navigate("/books"), 1500);
         } catch (error) {
-            setMessage("Error saving the book.");
+            setMessage("Error al guardar el libro.");
         }
     };
 
     return (
         <div>
-            <h1>{id ? "Edit book" : "New book"}</h1>
+            <h1>{id ? "Editar libro" : "Nuevo libro"}</h1>
             {message && <p>{message}</p>}
             <form onSubmit={handleSubmit}>
                 <div>
-                    <label>Title</label>
+                    <label>Titulo</label>
                     <input name="titulo" value={book.titulo} onChange={handleChange} />
                 </div>
                 <div>
@@ -78,17 +85,17 @@ function BookForm() {
                     <input name="isbn" value={book.isbn} onChange={handleChange} />
                 </div>
                 <div>
-                    <label>Publication year</label>
+                    <label>Anio de publicacion</label>
                     <input name="anioPublicacion" type="number" value={book.anioPublicacion} onChange={handleChange} />
                 </div>
                 <div>
-                    <label>Image URL</label>
+                    <label>URL de la imagen</label>
                     <input name="imagen" value={book.imagen} onChange={handleChange} />
                 </div>
                 <div>
-                    <label>Author</label>
+                    <label>Autor</label>
                     <select name="autorId" value={book.autorId} onChange={handleChange}>
-                        <option value="">Select an author</option>
+                        <option value="">Selecciona un autor</option>
                         {authors.map((author) => (
                             <option key={author.id} value={author.id}>
                                 {author.nombre} {author.apellido}
@@ -96,8 +103,8 @@ function BookForm() {
                         ))}
                     </select>
                 </div>
-                <button type="submit">{id ? "Update" : "Create"}</button>
-                <button type="button" onClick={() => navigate("/books")}>Cancel</button>
+                <button type="submit">{id ? "Actualizar" : "Crear"}</button>
+                <button type="button" onClick={() => navigate("/books")}>Cancelar</button>
             </form>
         </div>
     );

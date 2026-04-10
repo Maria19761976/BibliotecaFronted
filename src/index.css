@@ -1,12 +1,28 @@
-<<<<<<< HEAD
+* {
+  margin: 0;
+  padding: 0;
+  box-sizing: border-box;
+}
+
+body {
+  margin: 0;
+  min-height: 100vh;
+  font-family: Arial, sans-serif;
+}
+
+#root {
+  min-height: 100vh;
+}
+
 table {
   width: 100%;
   border-collapse: collapse;
-  overflow-x: auto;
   display: block;
+  overflow-x: auto;
 }
 
-th, td {
+th,
+td {
   padding: 8px 12px;
   text-align: left;
   border: 1px solid #ddd;
@@ -17,7 +33,8 @@ th, td {
     font-size: 14px;
   }
 
-  th, td {
+  th,
+  td {
     padding: 6px 8px;
   }
 
@@ -26,27 +43,4 @@ th, td {
     width: 100%;
     margin: 4px 0;
   }
-=======
-/* Reset y estilos globales */
-* {
-  margin: 0;
-  padding: 0;
-  box-sizing: border-box;
-}
-
-:root {
-  font-family: Inter, system-ui, Avenir, Helvetica, Arial, sans-serif;
-  line-height: 1.5;
-  font-weight: 400;
-  color-scheme: light dark;
-  font-synthesis: none;
-  text-rendering: optimizeLegibility;
-  -webkit-font-smoothing: antialiased;
-  -moz-osx-font-smoothing: grayscale;
-}
-
-body {
-  margin: 0;
-  min-height: 100vh;
->>>>>>> feat/index
 }

@@ -6,13 +6,13 @@ export default function Hero() {
       <h2>Tu archivo digital personal.</h2>
 
       <p>
-        Explora miles de volúmenes, investigaciones y manuscritos históricos.
+        Explora miles de volumenes, investigaciones y manuscritos historicos.
       </p>
 
-      <input placeholder="Busca por título, autor o ISBN..." />
+      <input placeholder="Busca por titulo, autor o ISBN..." />
 
       <div className="categories">
-        {['Ciencia','Literatura','Historia','Artes','Filosofía'].map(c => (
+        {['Ciencia', 'Literatura', 'Historia', 'Artes', 'Filosofia'].map((c) => (
           <span key={c}>{c}</span>
         ))}
       </div>

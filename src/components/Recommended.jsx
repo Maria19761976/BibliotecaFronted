@@ -4,7 +4,7 @@ export default function Recommended() {
   const books = [
     'Estructuras de la Realidad',
     'El Origen del Comercio',
-    'Visiones Periféricas',
+    'Visiones Perifericas',
     'Ecos del Invierno',
     'Espacio Urbano'
   ]
@@ -12,7 +12,7 @@ export default function Recommended() {
   return (
     <section className="recommended">
       <div className="header">
-        <h3>Lecturas Recomendadas</h3>
+        <h3>Lecturas recomendadas</h3>
         <span>Ver todo</span>
       </div>
 

@@ -1,3 +1,4 @@
+<<<<<<< HEAD
 import { Link } from "react-router-dom";
 
 function Navbar() {
@@ -13,3 +14,20 @@ function Navbar() {
 }
 
 export default Navbar;
+=======
+import './Navbar.css'
+
+export default function Navbar() {
+  return (
+    <header className="navbar">
+      <h1>La Biblioteca</h1>
+
+      <nav>
+        <span>Inicio</span>
+        <span>Autor</span>
+
+      </nav>
+    </header>
+  )
+}
+>>>>>>> feat/index

@@ -1,0 +1,34 @@
+.hero {
+  padding: 40px;
+  max-width: 700px;
+}
+
+.hero h2 {
+  font-size: 48px;
+  font-weight: bold;
+}
+
+.hero p {
+  margin-top: 10px;
+  color: #666;
+}
+
+.hero input {
+  width: 100%;
+  padding: 15px;
+  margin-top: 20px;
+  border-radius: 10px;
+  border: 1px solid #ccc;
+}
+
+.categories {
+  margin-top: 15px;
+}
+
+.categories span {
+  margin-right: 10px;
+  background: #eee;
+  padding: 8px 14px;
+  border-radius: 20px;
+  font-size: 14px;
+}

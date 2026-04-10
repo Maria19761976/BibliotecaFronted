@@ -1,3 +1,4 @@
+<<<<<<< HEAD
 import { BrowserRouter, Routes, Route } from "react-router-dom";
 import AuthorList from "./pages/authors/AuthorList";
 import AuthorForm from "./pages/authors/AuthorForm";
@@ -20,3 +21,11 @@ function App() {
 }
 
 export default App;
+=======
+import Home from './pages/Home'
+import './styles/global.css'
+
+export default function App() {
+  return <Home />
+}
+>>>>>>> feat/index

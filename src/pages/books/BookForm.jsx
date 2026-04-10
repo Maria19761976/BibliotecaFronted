@@ -9,11 +9,11 @@ function BookForm() {
     const [message, setMessage] = useState("");
     const [authors, setAuthors] = useState([]);
     const [book, setBook] = useState({
-        titulo: "",
-        isbn: "",
-        anioPublicacion: "",
-        imagen: "",
-        autorId: "",
+        title: "",
+        ISBN: "",
+        publicationYear: "",
+        image: "",
+        authorId: "",
     });
 
     useEffect(() => {
@@ -31,30 +31,30 @@ function BookForm() {
     const loadBook = async () => {
         const data = await getBookById(id);
         setBook({
-            titulo: data.titulo,
-            isbn: data.isbn,
-            anioPublicacion: data.anioPublicacion,
-            imagen: data.imagen,
-            autorId: data.autor?.id || "",
+            title: data.title,
+            ISBN: data.ISBN,
+            publicationYear: data.publicationYear,
+            image: data.image,
+            authorId: data.author?.id || "",
         });
     };
 
-    const handleChange = (e) => {
-        const { name, value } = e.target;
+    const handleChange = (event) => {
+        const { name, value } = event.target;
         setBook({ ...book, [name]: value });
     };
 
-    const handleSubmit = async (e) => {
-        e.preventDefault();
-        if (!book.titulo || !book.isbn || !book.anioPublicacion || !book.autorId) {
+    const handleSubmit = async (event) => {
+        event.preventDefault();
+        if (!book.title || !book.ISBN || !book.publicationYear || !book.authorId) {
             setMessage("Por favor rellena todos los campos.");
             return;
         }
 
         const bookPayload = {
             ...book,
-            anioPublicacion: Number(book.anioPublicacion),
-            autorId: Number(book.autorId),
+            publicationYear: Number(book.publicationYear),
+            authorId: Number(book.authorId),
         };
 
         try {
@@ -78,19 +78,19 @@ function BookForm() {
             <form onSubmit={handleSubmit}>
                 <div>
                     <label>Título</label>
-                    <input name="titulo" value={book.titulo} onChange={handleChange} />
+                    <input name="title" value={book.title} onChange={handleChange} />
                 </div>
                 <div>
                     <label>ISBN</label>
-                    <input name="isbn" value={book.isbn} onChange={handleChange} />
+                    <input name="ISBN" value={book.ISBN} onChange={handleChange} />
                 </div>
                 <div>
                     <label>Año de publicación</label>
-                    <input name="anioPublicacion" type="number" value={book.anioPublicacion} onChange={handleChange} />
+                    <input name="publicationYear" type="number" value={book.publicationYear} onChange={handleChange} />
                 </div>
                 <div>
                     <label>URL de la imagen</label>
-                    <input name="imagen" value={book.imagen} onChange={handleChange} />
+                    <input name="image" value={book.image} onChange={handleChange} />
                 </div>
                 <div>
                     <label>Autor</label>
@@ -98,7 +98,7 @@ function BookForm() {
                         <option value="">Selecciona un autor</option>
                         {authors.map((author) => (
                             <option key={author.id} value={author.id}>
-                                {author.nombre} {author.apellido}
+                                {author.name} {author.surname}
                             </option>
                         ))}
                     </select>

@@ -7,11 +7,11 @@ function AuthorForm() {
     const { id } = useParams();
     const [message, setMessage] = useState("");
     const [author, setAuthor] = useState({
-        nombre: "",
-        apellido: "",
-        nacionalidad: "",
-        anioNacimiento: "",
-        vivo: true,
+        name: "",
+        surname: "",
+        nationality: "",
+        birthYear: "",
+        alive: true,
     });
 
     useEffect(() => {
@@ -22,24 +22,30 @@ function AuthorForm() {
 
     const loadAuthor = async () => {
         const author = await getAuthorById(id);
-        setAuthor(author);
+        setAuthor({
+            name: data.name || "",
+            surname: data.surname || "",
+            nationality: data.nationality || "",
+            birthYear: data.birthYear || "",
+            alive: data.alive !== undefined ? data.alive : true,
+        });
     };
 
-    const handleChange = (e) => {
-        const { name, value, type, checked } = e.target;
+    const handleChange = (event) => {
+        const { name, value, type, checked } = event.target;
         setAuthor({ ...author, [name]: type === "checkbox" ? checked : value });
     };
 
-    const handleSubmit = async (e) => {
-        e.preventDefault();
-        if (!author.nombre || !author.apellido || !author.nacionalidad || !author.anioNacimiento) {
+    const handleSubmit = async (event) => {
+        event.preventDefault();
+        if (!author.name || !author.surname || !author.nationality || !author.birthYear) {
             setMessage("Por favor rellena todos los campos.");
             return;
         }
 
         const authorPayload = {
             ...author,
-            anioNacimiento: Number(author.anioNacimiento),
+            birthYear: Number(author.birthYear),
         };
 
         try {
@@ -63,23 +69,23 @@ function AuthorForm() {
             <form onSubmit={handleSubmit}>
                 <div>
                     <label>Nombre</label>
-                    <input name="nombre" value={author.nombre} onChange={handleChange} />
+                    <input name="name" value={author.name} onChange={handleChange} />
                 </div>
                 <div>
                     <label>Apellido</label>
-                    <input name="apellido" value={author.apellido} onChange={handleChange} />
+                    <input name="surname" value={author.surname} onChange={handleChange} />
                 </div>
                 <div>
                     <label>Nacionalidad</label>
-                    <input name="nacionalidad" value={author.nacionalidad} onChange={handleChange} />
+                    <input name="nationality" value={author.nationality} onChange={handleChange} />
                 </div>
                 <div>
                     <label>Año de nacimiento</label>
-                    <input name="anioNacimiento" type="number" value={author.anioNacimiento} onChange={handleChange} />
+                    <input name="birthYear" type="number" value={author.birthYear} onChange={handleChange} />
                 </div>
                 <div>
                     <label>¿Vive?</label>
-                    <input name="vivo" type="checkbox" checked={author.vivo} onChange={handleChange} />
+                    <input name="alive" type="checkbox" checked={author.alive} onChange={handleChange} />
                 </div>
                 <button type="submit">{id ? "Actualizar" : "Crear"}</button>
                 <button type="button" onClick={() => navigate("/authors")}>Cancelar</button>

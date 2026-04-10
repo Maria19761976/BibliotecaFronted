@@ -6,6 +6,9 @@ function AuthorForm() {
     const navigate = useNavigate();
     const { id } = useParams();
     const [message, setMessage] = useState("");
+    const [loading, setLoading] = useState(false);
+    const [fetching, setFetching] = useState(false);
+    
     const [author, setAuthor] = useState({
         name: "",
         surname: "",
@@ -21,14 +24,21 @@ function AuthorForm() {
     }, [id]);
 
     const loadAuthor = async () => {
-        const author = await getAuthorById(id);
-        setAuthor({
-            name: data.name || "",
-            surname: data.surname || "",
-            nationality: data.nationality || "",
-            birthYear: data.birthYear || "",
-            alive: data.alive !== undefined ? data.alive : true,
-        });
+        try{
+            setFetching(true);
+            const author = await getAuthorById(id);
+            setAuthor({
+                name: data.name || "",
+                surname: data.surname || "",
+                nationality: data.nationality || "",
+                birthYear: data.birthYear || "",
+                alive: data.alive !== undefined ? data.alive : true,
+            });
+        } catch (error){
+            setMessage("No se pudo cargar la información del autor");
+        } finally {
+            setFetching(false);
+        }
     };
 
     const handleChange = (event) => {
@@ -49,6 +59,9 @@ function AuthorForm() {
         };
 
         try {
+            setLoading(true);
+            setMessage("");
+
             if (id) {
                 await updateAuthor(id, authorPayload);
                 setMessage("Autor actualizado correctamente.");
@@ -59,36 +72,44 @@ function AuthorForm() {
             setTimeout(() => navigate("/authors"), 1500);
         } catch (error) {
             setMessage("Error al guardar el autor.");
+        } finally {
+            setLoading(false);
         }
     };
+
+    if(fetching) return <p>Cargando datos del autor...</p>;
 
     return (
         <div>
             <h1>{id ? "Editar autor" : "Nuevo autor"}</h1>
             {message && <p>{message}</p>}
             <form onSubmit={handleSubmit}>
-                <div>
+                <fieldset disabled={loading} style={{ border: 'none', padding: 0 }}>
+                    <div>
                     <label>Nombre</label>
                     <input name="name" value={author.name} onChange={handleChange} />
-                </div>
-                <div>
-                    <label>Apellido</label>
-                    <input name="surname" value={author.surname} onChange={handleChange} />
-                </div>
-                <div>
-                    <label>Nacionalidad</label>
-                    <input name="nationality" value={author.nationality} onChange={handleChange} />
-                </div>
-                <div>
-                    <label>Año de nacimiento</label>
-                    <input name="birthYear" type="number" value={author.birthYear} onChange={handleChange} />
-                </div>
-                <div>
-                    <label>¿Vive?</label>
-                    <input name="alive" type="checkbox" checked={author.alive} onChange={handleChange} />
-                </div>
-                <button type="submit">{id ? "Actualizar" : "Crear"}</button>
-                <button type="button" onClick={() => navigate("/authors")}>Cancelar</button>
+                    </div>
+                    <div>
+                        <label>Apellido</label>
+                        <input name="surname" value={author.surname} onChange={handleChange} />
+                    </div>
+                    <div>
+                        <label>Nacionalidad</label>
+                        <input name="nationality" value={author.nationality} onChange={handleChange} />
+                    </div>
+                    <div>
+                        <label>Año de nacimiento</label>
+                        <input name="birthYear" type="number" value={author.birthYear} onChange={handleChange} />
+                    </div>
+                    <div>
+                        <label>¿Vive?</label>
+                        <input name="alive" type="checkbox" checked={author.alive} onChange={handleChange} />
+                    </div>
+                    <button type="submit" disabled={loading}>
+                        {loading ? "Guardando..." :(id ? "Actualizar" : "Crear")}
+                    </button>
+                    <button type="button" onClick={() => navigate("/authors")}>Cancelar</button>
+                </fieldset>
             </form>
         </div>
     );

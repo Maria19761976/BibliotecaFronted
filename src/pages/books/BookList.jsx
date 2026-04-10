@@ -6,6 +6,8 @@ import "../../components/InfoCard.css";
 
 function BookList() {
     const [books, setBooks] = useState([]);
+    const [loading, setLoading] = useState(true);
+    const [message, setMessage] = useState("");
     const navigate = useNavigate();
 
     useEffect(() => {
@@ -14,24 +16,28 @@ function BookList() {
 
     const loadBooks = async () => {
         try {
+            setLoading(true);
             const response = await getAllBooks();
             setBooks(Array.isArray(response) ? response : []);
         } catch (error) {
-            console.error("Error loading books:", error);
-            setBooks([]);
+            setMessage("No hemos podido encontrar los libros")
+        } finally {
+            setLoading(false);
         }
     };
 
     const handleDelete = async (id) => {
-        if (window.confirm("Are you sure you want to delete this book?")) {
-            try {
+        if(window.confirm("¿Estás seguro de que quieres borrar este libro")){
+            try{
                 await deleteBook(id);
                 loadBooks();
             } catch (error) {
-                console.error("Error deleting book:", error);
+                setMessage("No se pudo borrar el libro")
             }
         }
     };
+
+    if (loading) return <div className="List-page"><p>Buscando los libros</p></div>;
 
     return (
         <div className="list-page">
@@ -54,7 +60,6 @@ function BookList() {
                                 { label: "Year", value: book.publicationYear || "-" },
                                 {
                                     label: "Author",
-                                    // Usamos author (con h) que es como viene en tu JSON de Tolkien
                                     value: `${book.author?.name || ""} ${book.author?.surname || ""}`.trim() || "-",
                                 },
                             ]}

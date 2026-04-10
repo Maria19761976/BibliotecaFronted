@@ -5,28 +5,34 @@ import InfoCard from "../../components/InfoCard";
 import "../../components/InfoCard.css";
 
 function AuthorList() {
+    const navigate = useNavigate();
     const [authors, setAuthors] = useState([]);
     const [loading, setLoading] = useState(true);
-    const [errorMsg, setErrorMsg] = useState([]);
-    const navigate = useNavigate();
+    const [message, setMessage] = useState("");
 
     useEffect(() => {
         loadAuthors();
     }, []);
 
-const loadAuthors = async () => {
+    const loadAuthors = async () => {
         try {
             setLoading(true);
             const response = await getAllAuthors();
             setAuthors(response.data || response); 
-            setErrorMsg("");
         } catch (error) {
-            console.error(error);
-            setErrorMsg("No se pudieron cargar los autores. ¿Está el Backend encendido?");
+            setMessage("No se pudieron cargar los autores. ¿Está el Backend encendido?");
         } finally {
             setLoading(false);
         }
     };
+
+    if(loading){
+        return (
+            <div className="list-page">
+                <p className="loading-text">Cargando biblioteca...</p>
+            </div>
+        )
+    }
 
     return (
         <div className="list-page">

@@ -1,14 +1,17 @@
 # 📚 Biblioteca Frontend
 
-Aplicación web frontend para la gestión de una biblioteca, desarrollada con **React** y **Vite** como parte de un proyecto grupal del Bootcamp Inditex.
+Aplicación web frontend para la gestión de una biblioteca de libros por autor, desarrollada con **React** y **Vite** como parte de un proyecto grupal.
 
-Este repositorio corresponde al cliente web que consume la API REST del backend desarrollada con Spring Boot y MySQL. Permite a los usuarios visualizar, añadir, editar y eliminar libros y autores a través de una interfaz web intuitiva.
+Este repositorio corresponde al cliente web que consume la API REST del backend desarrollada con Spring Boot y MySQL. Permite realizar el CRUD completo de libros y autores desde el frontend, conectado con el backend en todo momento.
+
+> **Backend del proyecto:** https://github.com/Suso777/Biblioteca-Backend
 
 ---
 
 ## Índice
 
-- [Descripción del proyecto](#descripción-del-proyecto)
+- [Descripción del ejercicio](#descripción-del-ejercicio)
+- [Requisitos cumplidos](#requisitos-cumplidos)
 - [Funcionalidades](#funcionalidades)
 - [Tecnologías utilizadas](#tecnologías-utilizadas)
 - [Arquitectura del proyecto](#arquitectura-del-proyecto)
@@ -24,24 +27,44 @@ Este repositorio corresponde al cliente web que consume la API REST del backend 
 
 ---
 
-## Descripción del proyecto
+## Descripción del ejercicio
 
-Biblioteca Frontend es la capa de presentación de una aplicación completa de gestión de biblioteca. Está desarrollada  con React y se comunica con el backend mediante llamadas HTTP a la API REST usando Axios.
+El objetivo del ejercicio es poner en práctica el desarrollo fullstack montando una biblioteca de libros organizados por autor, utilizando **Spring Boot** en el backend y **React** en el frontend.
 
-La aplicación forma parte de un proyecto de grupo desarrollado durante el Bootcamp Inditex, donde el equipo se dividió entre el desarrollo del frontend (React + Vite) y el backend (Spring Boot + MySQL), trabajando de forma coordinada para integrar ambas partes.
+El proyecto cubre el ciclo completo de desarrollo: modelado de datos, API REST, conexión a base de datos MySQL, diseño en Figma, diagrama de base de datos en Draw.io, gestión de tareas con Jira y una interfaz web responsive que realiza el CRUD completo de las dos entidades desde el front.
+
+---
+
+## Requisitos cumplidos
+
+| Requisito | Estado |
+|---|---|
+| Modelo, controlador, repository y acceso a base de datos | ✅ Completado |
+| CRUD completo de libros | ✅ Completado |
+| CRUD completo de autores | ✅ Completado |
+| Entidad libro con título, ISBN, año de publicación e imagen | ✅ Completado |
+| Entidad autor con nombre, apellido, nacionalidad, año de nacimiento y vivo/fallecido | ✅ Completado |
+| Relación one-to-many entre autores y libros | ✅ Completado |
+| Diseño completo del front en Figma | ✅ Completado |
+| Diagrama de base de datos en Draw.io | ✅ Completado |
+| Gestión de tareas con Jira | ✅ Completado |
+| Frontend en React conectado al backend con CRUD completo | ✅ Completado |
+| Frontend responsive | ✅ Completado |
+| Validación de endpoints con Postman | ✅ Completado |
 
 ---
 
 ## Funcionalidades
 
-- Listado completo de todos los libros del catálogo con su información detallada (título, ISBN, año de publicación, portada y autor)
-- Listado completo de autores con sus datos (nombre, apellido, nacionalidad, año de nacimiento y si está vivo)
+- Listado completo de todos los libros del catálogo con título, ISBN, año de publicación, portada y autor
+- Listado completo de autores con nombre, apellido, nacionalidad, año de nacimiento y estado (vivo o fallecido)
 - Consulta de un libro o autor concreto por su ID
 - Añadir nuevos libros al catálogo indicando todos sus campos, incluyendo el autor al que pertenece
 - Añadir nuevos autores al sistema
 - Editar la información de cualquier libro o autor existente
 - Eliminar libros y autores del sistema
-- Navegación fluida entre las distintas secciones de la aplicación gracias a React Router
+- Navegación fluida entre las distintas secciones de la aplicación con React Router
+- Diseño responsive adaptado a distintos tamaños de pantalla
 
 ---
 
@@ -54,6 +77,8 @@ La aplicación forma parte de un proyecto de grupo desarrollado durante el Bootc
 | React Router DOM | 7.x | Gestión de rutas y navegación entre páginas |
 | Axios | 1.x | Realización de peticiones HTTP a la API REST del backend |
 | ESLint | 9.x | Análisis estático del código para mantener su calidad |
+| Figma | — | Diseño de la interfaz de usuario |
+| Jira | — | Gestión de tareas y seguimiento del proyecto |
 
 ---
 
@@ -78,30 +103,30 @@ BibliotecaFronted/
 ## Diagrama de páginas y navegación
 
 ```
-/                        → Página principal (inicio / bienvenida)
+/                         → Página principal (inicio / bienvenida)
 │
-├── /books               → Listado de todos los libros
-│   ├── /books/:id       → Detalle de un libro concreto
-│   ├── /books/new       → Formulario para añadir un nuevo libro
-│   └── /books/edit/:id  → Formulario para editar un libro existente
+├── /books                → Listado de todos los libros
+│   ├── /books/:id        → Detalle de un libro concreto
+│   ├── /books/new        → Formulario para añadir un nuevo libro
+│   └── /books/edit/:id   → Formulario para editar un libro existente
 │
-└── /authors             → Listado de todos los autores
-    ├── /authors/:id     → Detalle de un autor concreto
-    ├── /authors/new     → Formulario para añadir un nuevo autor
+└── /authors              → Listado de todos los autores
+    ├── /authors/:id      → Detalle de un autor concreto
+    ├── /authors/new      → Formulario para añadir un nuevo autor
     └── /authors/edit/:id → Formulario para editar un autor existente
 ```
 
-La navegación entre páginas se gestiona con React Router DOM. Desde el listado de libros se puede acceder al detalle de cada libro, y desde ahí editar o volver al listado. El flujo es el mismo para autores.
+La navegación entre páginas se gestiona con React Router DOM. Desde el listado de libros se puede acceder al detalle de cada libro y desde ahí editar o volver al listado. El flujo es el mismo para autores.
 
 ---
 
 ## Conexión con el backend
 
-Este frontend está diseñado para funcionar junto con el backend del proyecto, disponible en el siguiente repositorio:
+Este frontend está diseñado para funcionar junto con el backend del proyecto:
 
-**Backend:** https://github.com/Suso777/Biblioteca-Backend — API REST desarrollada con Java, Spring Boot y MySQL.
+**Backend:** https://github.com/Suso777/Biblioteca-Backend — API REST con Java, Spring Boot, Maven y MySQL, siguiendo el patrón MVC con capas `controller`, `service`, `repository` y `model`.
 
-La URL base de la API es `http://localhost:8080`. Todos los datos de libros y autores se obtienen, crean, actualizan y eliminan a través de los siguientes endpoints:
+La URL base de la API es `http://localhost:8080`.
 
 **Endpoints de autores**
 
@@ -125,11 +150,11 @@ La URL base de la API es `http://localhost:8080`. Todos los datos de libros y au
 
 **Modelo de datos**
 
-Cada autor tiene los campos: `id`, `name`, `surname`, `nationality`, `birthYear` y `alive`.
+Entidad `Author`: `id`, `name`, `surname`, `nationality`, `birthYear`, `alive`.
 
-Cada libro tiene los campos: `id`, `title`, `isbn`, `publicationYear`, `image` y `author_id`.
+Entidad `Book`: `id`, `title`, `isbn`, `publicationYear`, `image`, `author_id`.
 
-La relación entre ambas entidades es de uno a muchos: un autor puede tener varios libros, y cada libro pertenece a un único autor.
+Relación: **one-to-many** entre `Author` y `Book`. Un autor puede tener varios libros; cada libro pertenece a un único autor.
 
 ---
 
@@ -164,7 +189,7 @@ npm run dev
 
 4. Abre el navegador en `http://localhost:5173`
 
-> Importante: el backend debe estar arrancado y con la base de datos cargada antes de usar la aplicación. Consulta las instrucciones de configuración del backend en su repositorio.
+> Importante: el backend debe estar arrancado y con la base de datos cargada antes de usar la aplicación. Consulta las instrucciones de configuración en el repositorio del backend.
 
 ---
 
@@ -173,9 +198,9 @@ npm run dev
 | Comando | Descripción |
 |---|---|
 | `npm run dev` | Inicia el servidor de desarrollo local con HMR |
-| `npm run build` | Genera la versión optimizada de producción en la carpeta `/dist` |
+| `npm run build` | Genera la versión optimizada de producción en `/dist` |
 | `npm run preview` | Previsualiza el build de producción en local |
-| `npm run lint` | Ejecuta ESLint para detectar errores y problemas en el código |
+| `npm run lint` | Ejecuta ESLint para detectar errores en el código |
 
 ---
 
@@ -187,7 +212,7 @@ El backend no está arrancado o no es accesible en `http://localhost:8080`. Aseg
 
 **Error de CORS al hacer peticiones a la API**
 
-Si ves un error de tipo `Access-Control-Allow-Origin` en la consola del navegador, significa que el backend no tiene CORS configurado para aceptar peticiones desde `http://localhost:5173`. Revisa la configuración CORS en el backend.
+Si ves un error de tipo `Access-Control-Allow-Origin` en la consola del navegador, el backend no tiene CORS configurado para aceptar peticiones desde `http://localhost:5173`. Revisa la configuración CORS en el backend.
 
 **Error `net::ERR_CONNECTION_REFUSED`**
 
@@ -239,11 +264,11 @@ Proyecto desarrollado en grupo durante el **Bootcamp Inditex**:
 | David Navarro | Desarrollo |
 | Facundo Garavagalia | Desarrollo |
 | Javier Galvañ | Desarrollo |
-| María Pérez | Desarrollo |
-| Suso Suárez | Desarrollo |
+| María Pérez | Desarrollo  |
+| Suso Suárez | Desarrollo  |
 
 ---
 
 ## Estado del proyecto
 
-El proyecto cuenta con una base funcional completa que cubre las operaciones CRUD sobre autores y libros, integración con la API REST del backend y navegación entre páginas. Está listo para ser ejecutado en local siguiendo los pasos de instalación descritos en este documento.
+El proyecto cuenta con una base funcional completa que cubre las operaciones CRUD sobre autores y libros, integración con la API REST del backend, navegación entre páginas y diseño responsive. Cumple con todos los requisitos del ejercicio y está listo para ser ejecutado en local siguiendo los pasos de instalación descritos en este documento.

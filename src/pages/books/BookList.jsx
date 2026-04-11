@@ -1,6 +1,7 @@
 import { useEffect, useState } from "react";
 import { useLocation, useNavigate, useSearchParams } from "react-router-dom";
 import InfoCard from "../../components/InfoCard";
+import { getApiErrorMessage } from "../../services/apiUtils";
 import { deleteBook, getAllBooks } from "../../services/bookService";
 
 const feedbackStyles = {
@@ -22,15 +23,14 @@ function BookList() {
         try {
             setLoading(true);
             const response = await getAllBooks();
-            const loadedBooks = Array.isArray(response) ? response : [];
-            setAllBooks(loadedBooks);
+            setAllBooks(response);
             setFeedback((currentFeedback) =>
                 currentFeedback.type === "error" ? { type: "", text: "" } : currentFeedback
             );
-        } catch (_error) {
+        } catch (error) {
             setFeedback({
                 type: "error",
-                text: "No se pudo cargar el listado de libros. Inténtalo de nuevo.",
+                text: getApiErrorMessage(error, "No se pudo cargar el listado de libros. Inténtalo de nuevo."),
             });
         } finally {
             setLoading(false);
@@ -71,10 +71,10 @@ function BookList() {
                     text: "Libro eliminado correctamente.",
                 });
                 await loadBooks();
-            } catch (_error) {
+            } catch (error) {
                 setFeedback({
                     type: "error",
-                    text: "No se pudo eliminar el libro. Inténtalo de nuevo.",
+                    text: getApiErrorMessage(error, "No se pudo eliminar el libro. Inténtalo de nuevo."),
                 });
             }
         }

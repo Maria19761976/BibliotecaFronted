@@ -1,5 +1,6 @@
 import { useCallback, useEffect, useState } from "react";
 import { useNavigate, useParams } from "react-router-dom";
+import { getApiErrorMessage } from "../../services/apiUtils";
 import { getAllAuthors } from "../../services/authorService";
 import { createBook, getBookById, updateBook } from "../../services/bookService";
 
@@ -35,8 +36,7 @@ function BookForm() {
                 id ? getBookById(id) : Promise.resolve(null),
             ]);
 
-            const loadedAuthors = Array.isArray(authorsData) ? authorsData : [];
-            setAuthors(loadedAuthors);
+            setAuthors(authorsData);
 
             if (bookData) {
                 setBook({
@@ -47,13 +47,16 @@ function BookForm() {
                     authorId: bookData.author?.id ? String(bookData.author.id) : "",
                 });
             }
-        } catch (_error) {
+        } catch (error) {
             setLoadError(true);
             setFeedback({
                 type: "error",
-                text: id
-                    ? "No se pudo cargar la información del libro. Inténtalo de nuevo."
-                    : "No se pudo cargar la lista de autores. Inténtalo de nuevo.",
+                text: getApiErrorMessage(
+                    error,
+                    id
+                        ? "No se pudo cargar la información del libro. Inténtalo de nuevo."
+                        : "No se pudo cargar la lista de autores. Inténtalo de nuevo."
+                ),
             });
         } finally {
             setFetching(false);
@@ -72,7 +75,20 @@ function BookForm() {
     const handleSubmit = async (event) => {
         event.preventDefault();
 
-        if (!book.title || !book.isbn || !book.publicationYear || !book.authorId) {
+        const normalizedBook = {
+            title: book.title.trim(),
+            isbn: book.isbn.trim(),
+            publicationYear: book.publicationYear.toString().trim(),
+            image: book.image.trim(),
+            authorId: book.authorId.toString().trim(),
+        };
+
+        if (
+            !normalizedBook.title ||
+            !normalizedBook.isbn ||
+            !normalizedBook.publicationYear ||
+            !normalizedBook.authorId
+        ) {
             setFeedback({
                 type: "error",
                 text: "Por favor, rellena todos los campos obligatorios.",
@@ -80,13 +96,32 @@ function BookForm() {
             return;
         }
 
+        const parsedPublicationYear = Number(normalizedBook.publicationYear);
+        const parsedAuthorId = Number(normalizedBook.authorId);
+
+        if (!Number.isInteger(parsedPublicationYear) || parsedPublicationYear <= 0) {
+            setFeedback({
+                type: "error",
+                text: "El año de publicación debe ser un número válido.",
+            });
+            return;
+        }
+
+        if (!Number.isInteger(parsedAuthorId) || parsedAuthorId <= 0) {
+            setFeedback({
+                type: "error",
+                text: "Selecciona un autor válido antes de guardar.",
+            });
+            return;
+        }
+
         const bookPayload = {
-            title: book.title,
-            isbn: book.isbn,
-            publicationYear: Number(book.publicationYear),
-            image: book.image,
+            title: normalizedBook.title,
+            isbn: normalizedBook.isbn,
+            publicationYear: parsedPublicationYear,
+            image: normalizedBook.image,
             author: {
-                id: Number(book.authorId),
+                id: parsedAuthorId,
             },
         };
 
@@ -108,10 +143,10 @@ function BookForm() {
                 replace: true,
                 state: { feedback: { type: "success", text: "Libro creado correctamente." } },
             });
-        } catch (_error) {
+        } catch (error) {
             setFeedback({
                 type: "error",
-                text: "No se pudo guardar el libro. Revisa los datos e inténtalo de nuevo.",
+                text: getApiErrorMessage(error, "No se pudo guardar el libro. Revisa los datos e inténtalo de nuevo."),
             });
             setLoading(false);
         }
@@ -146,6 +181,38 @@ function BookForm() {
                             className="inline-flex items-center justify-center rounded-2xl bg-emerald-700 px-5 py-3 font-medium text-white transition-all hover:-translate-y-0.5 hover:bg-emerald-800"
                         >
                             Reintentar
+                        </button>
+                        <button
+                            type="button"
+                            onClick={() => navigate("/books")}
+                            className="inline-flex items-center justify-center rounded-2xl border border-slate-200 bg-white px-5 py-3 font-medium text-slate-700 transition-all hover:-translate-y-0.5 hover:border-slate-300 hover:bg-slate-50"
+                        >
+                            Volver al listado
+                        </button>
+                    </div>
+                </section>
+            </div>
+        );
+    }
+
+    if (authors.length === 0) {
+        return (
+            <div className="mx-auto max-w-3xl px-4 py-8 sm:px-0">
+                <section className="rounded-3xl border border-slate-200 bg-white/90 p-8 text-center shadow-sm">
+                    <p className="text-sm font-medium uppercase tracking-[0.2em] text-emerald-700">Libros</p>
+                    <h1 className="mt-3 text-3xl font-semibold tracking-tight text-slate-900">
+                        No hay autores disponibles
+                    </h1>
+                    <p className="mt-3 text-sm leading-6 text-slate-600">
+                        Necesitas al menos un autor registrado antes de crear o editar libros.
+                    </p>
+                    <div className="mt-6 flex flex-col gap-3 sm:flex-row sm:justify-center">
+                        <button
+                            type="button"
+                            onClick={() => navigate("/authors/new")}
+                            className="inline-flex items-center justify-center rounded-2xl bg-emerald-700 px-5 py-3 font-medium text-white transition-all hover:-translate-y-0.5 hover:bg-emerald-800"
+                        >
+                            Crear autor
                         </button>
                         <button
                             type="button"
@@ -204,6 +271,7 @@ function BookForm() {
                                     name="title"
                                     value={book.title}
                                     onChange={handleChange}
+                                    required
                                     className="w-full rounded-2xl border border-slate-200 bg-white px-4 py-3 text-slate-900 outline-none transition placeholder:text-slate-400 focus:border-emerald-600 focus:ring-4 focus:ring-emerald-600/10 disabled:cursor-not-allowed disabled:bg-slate-100"
                                 />
                             </div>
@@ -217,6 +285,7 @@ function BookForm() {
                                     name="isbn"
                                     value={book.isbn}
                                     onChange={handleChange}
+                                    required
                                     className="w-full rounded-2xl border border-slate-200 bg-white px-4 py-3 text-slate-900 outline-none transition placeholder:text-slate-400 focus:border-emerald-600 focus:ring-4 focus:ring-emerald-600/10 disabled:cursor-not-allowed disabled:bg-slate-100"
                                 />
                             </div>
@@ -231,6 +300,9 @@ function BookForm() {
                                     type="number"
                                     value={book.publicationYear}
                                     onChange={handleChange}
+                                    min="1"
+                                    step="1"
+                                    required
                                     className="w-full rounded-2xl border border-slate-200 bg-white px-4 py-3 text-slate-900 outline-none transition placeholder:text-slate-400 focus:border-emerald-600 focus:ring-4 focus:ring-emerald-600/10 disabled:cursor-not-allowed disabled:bg-slate-100"
                                 />
                             </div>
@@ -258,6 +330,7 @@ function BookForm() {
                                 name="authorId"
                                 value={book.authorId}
                                 onChange={handleChange}
+                                required
                                 className="w-full rounded-2xl border border-slate-200 bg-white px-4 py-3 text-slate-900 outline-none transition placeholder:text-slate-400 focus:border-emerald-600 focus:ring-4 focus:ring-emerald-600/10 disabled:cursor-not-allowed disabled:bg-slate-100"
                             >
                                 <option value="">Selecciona un autor</option>

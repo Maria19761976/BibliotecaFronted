@@ -1,3 +1,4 @@
+import { Link } from 'react-router-dom'
 import './Recommended.css'
 
 export default function Recommended() {
@@ -12,8 +13,10 @@ export default function Recommended() {
   return (
     <section className="recommended">
       <div className="header">
-        <h3>Lecturas Recomendadas</h3>
-        <span>Ver todo</span>
+        <h3>Lecturas recomendadas</h3>
+        <Link to="/books" className="see-all">
+          Ver todo
+        </Link>
       </div>
 
       <div className="list">

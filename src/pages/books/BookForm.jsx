@@ -34,10 +34,10 @@ function BookForm() {
                 if (bookData) {
                     setBook({
                         title: bookData.title || "",
-                        isbn: bookData.isbn || "",
+                        isbn: bookData.isbn || bookData.ISBN || "",
                         publicationYear: bookData.publicationYear || "",
                         image: bookData.image || "",
-                        authorId: bookData.author?.id || "",
+                        authorId: bookData.author?.id || bookData.authorId || "",
                     });
                 }
             } catch (error) {
@@ -71,9 +71,9 @@ function BookForm() {
             isbn: book.isbn,
             publicationYear: Number(book.publicationYear),
             image: book.image,
-            authorId:{
+            author: {
                 id: Number(book.authorId),
-            }
+            },
         };
 
         try {

@@ -1,5 +1,5 @@
 import { useEffect, useState } from "react";
-import { useLocation, useNavigate } from "react-router-dom";
+import { useLocation, useNavigate, useSearchParams } from "react-router-dom";
 import InfoCard from "../../components/InfoCard";
 import { deleteBook, getAllBooks } from "../../services/bookService";
 
@@ -9,17 +9,21 @@ const feedbackStyles = {
 };
 
 function BookList() {
+    const [allBooks, setAllBooks] = useState([]);
     const [books, setBooks] = useState([]);
     const [loading, setLoading] = useState(true);
     const [feedback, setFeedback] = useState({ type: "", text: "" });
+    const [searchParams] = useSearchParams();
     const navigate = useNavigate();
     const location = useLocation();
+    const query = searchParams.get("q")?.trim().toLowerCase() || "";
 
     const loadBooks = async () => {
         try {
             setLoading(true);
             const response = await getAllBooks();
-            setBooks(Array.isArray(response) ? response : []);
+            const loadedBooks = Array.isArray(response) ? response : [];
+            setAllBooks(loadedBooks);
             setFeedback((currentFeedback) =>
                 currentFeedback.type === "error" ? { type: "", text: "" } : currentFeedback
             );
@@ -36,6 +40,24 @@ function BookList() {
     useEffect(() => {
         loadBooks();
     }, []);
+
+    useEffect(() => {
+        filterBooks();
+    }, [query, allBooks]);
+
+    const filterBooks = () => {
+        if (!query) {
+            setBooks(allBooks);
+            return;
+        }
+
+        const filtered = allBooks.filter((book) => {
+            const text = `${book.title || ""} ${book.isbn || ""} ${book.publicationYear || ""} ${book.author?.name || ""} ${book.author?.surname || ""}`.toLowerCase();
+            return text.includes(query);
+        });
+
+        setBooks(filtered);
+    };
 
     useEffect(() => {
         if (location.state?.feedback) {

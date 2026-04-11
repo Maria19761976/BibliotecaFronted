@@ -13,24 +13,57 @@
   color: #666;
 }
 
-.hero input {
+.hero-search {
+  margin-top: 20px;
+  display: grid;
+  gap: 12px;
+}
+
+.hero-search input {
   width: 100%;
   padding: 15px;
-  margin-top: 20px;
   border-radius: 10px;
   border: 1px solid #ccc;
+  font-size: 16px;
+}
+
+.hero-search button {
+  width: fit-content;
+  padding: 12px 24px;
+  align-self: start;
+  border: none;
+  border-radius: 10px;
+  background: #2563eb;
+  color: white;
+  font-weight: 600;
+  cursor: pointer;
+}
+
+.hero-search button:hover {
+  background: #1d4ed8;
 }
 
 .categories {
   margin-top: 15px;
+  display: flex;
+  flex-wrap: wrap;
+  gap: 10px;
 }
 
-.categories span {
-  margin-right: 10px;
+.category-pill {
   background: #eee;
   padding: 8px 14px;
   border-radius: 20px;
   font-size: 14px;
+  cursor: pointer;
+  border: 1px solid transparent;
+  transition: all 0.2s ease;
+}
+
+.category-pill:hover {
+  background: #ddd;
+  transform: translateY(-1px);
+  border-color: #ccc;
 }
 
 @media (max-width: 768px) {

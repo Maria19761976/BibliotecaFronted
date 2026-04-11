@@ -1,4 +1,4 @@
-import { useEffect, useState } from "react";
+import { useCallback, useEffect, useState } from "react";
 import { useNavigate, useParams } from "react-router-dom";
 import { getAllAuthors } from "../../services/authorService";
 import { createBook, getBookById, updateBook } from "../../services/bookService";
@@ -24,7 +24,7 @@ function BookForm() {
         authorId: "",
     });
 
-    const loadData = async () => {
+    const loadData = useCallback(async () => {
         try {
             setFetching(true);
             setLoadError(false);
@@ -46,7 +46,7 @@ function BookForm() {
                     authorId: bookData.author?.id || bookData.authorId || "",
                 });
             }
-        } catch (error) {
+        } catch (_error) {
             setLoadError(true);
             setFeedback({
                 type: "error",
@@ -57,11 +57,11 @@ function BookForm() {
         } finally {
             setFetching(false);
         }
-    };
+    }, [id]);
 
     useEffect(() => {
         loadData();
-    }, [id]);
+    }, [loadData]);
 
     const handleChange = (event) => {
         const { name, value } = event.target;
@@ -107,7 +107,7 @@ function BookForm() {
                 replace: true,
                 state: { feedback: { type: "success", text: "Libro creado correctamente." } },
             });
-        } catch (error) {
+        } catch (_error) {
             setFeedback({
                 type: "error",
                 text: "No se pudo guardar el libro. Revisa los datos e inténtalo de nuevo.",

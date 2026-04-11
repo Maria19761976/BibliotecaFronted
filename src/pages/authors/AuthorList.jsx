@@ -23,10 +23,10 @@ function AuthorList() {
             setFeedback((currentFeedback) =>
                 currentFeedback.type === "error" ? { type: "", text: "" } : currentFeedback
             );
-        } catch (error) {
+        } catch (_error) {
             setFeedback({
                 type: "error",
-                text: "No se pudo cargar el listado de autores. Intentalo de nuevo.",
+                text: "No se pudo cargar el listado de autores. Inténtalo de nuevo.",
             });
         } finally {
             setLoading(false);
@@ -45,7 +45,7 @@ function AuthorList() {
     }, [location.pathname, location.state, navigate]);
 
     const handleDelete = async (id) => {
-        if (window.confirm("Estas seguro de que quieres eliminar este autor?")) {
+        if (window.confirm("¿Seguro que quieres eliminar este autor?")) {
             try {
                 await deleteAuthor(id);
                 setFeedback({
@@ -53,10 +53,10 @@ function AuthorList() {
                     text: "Autor eliminado correctamente.",
                 });
                 await loadAuthors();
-            } catch (error) {
+            } catch (_error) {
                 setFeedback({
                     type: "error",
-                    text: "No se pudo eliminar el autor. Intentalo de nuevo.",
+                    text: "No se pudo eliminar el autor. Inténtalo de nuevo.",
                 });
             }
         }
@@ -81,7 +81,7 @@ function AuthorList() {
                     <p className="text-sm font-medium uppercase tracking-[0.2em] text-emerald-700">Autores</p>
                     <h1 className="text-3xl font-semibold tracking-tight text-slate-900">Listado de autores</h1>
                     <p className="mt-1 text-sm text-slate-600">
-                        Consulta, edita o anade nuevos registros de autores.
+                        Consulta, edita o añade nuevos registros de autores.
                     </p>
                 </div>
                 <button
@@ -89,7 +89,7 @@ function AuthorList() {
                     onClick={() => navigate("/authors/new")}
                     className="inline-flex items-center justify-center rounded-2xl bg-emerald-700 px-5 py-3 font-medium text-white transition-all hover:-translate-y-0.5 hover:bg-emerald-800"
                 >
-                    Anadir autor
+                    Añadir autor
                 </button>
             </div>
 
@@ -101,7 +101,7 @@ function AuthorList() {
                     }`}
                 >
                     <p className="font-medium">
-                        {feedback.type === "error" ? "No se pudo completar la accion." : "Operacion completada."}
+                        {feedback.type === "error" ? "No se pudo completar la acción." : "Operación completada."}
                     </p>
                     <p className="mt-1">{feedback.text}</p>
                 </div>
@@ -111,7 +111,7 @@ function AuthorList() {
                 <div className="rounded-3xl border border-dashed border-rose-200 bg-white/80 p-8 text-center shadow-sm">
                     <p className="text-lg font-semibold text-slate-900">No se pudieron mostrar los autores</p>
                     <p className="mt-2 text-sm text-slate-600">
-                        Intentalo de nuevo en unos segundos o vuelve a cargar el listado.
+                        Inténtalo de nuevo en unos segundos o vuelve a cargar el listado.
                     </p>
                     <button
                         type="button"
@@ -123,9 +123,9 @@ function AuthorList() {
                 </div>
             ) : showEmptyState ? (
                 <div className="rounded-3xl border border-dashed border-slate-300 bg-white/80 p-8 text-center shadow-sm">
-                    <p className="text-lg font-semibold text-slate-900">Aun no hay autores registrados</p>
+                    <p className="text-lg font-semibold text-slate-900">Aún no hay autores registrados</p>
                     <p className="mt-2 text-sm text-slate-600">
-                        Cuando anadas el primero, aparecera aqui con sus datos principales.
+                        Cuando añadas el primero, aparecerá aquí con sus datos principales.
                     </p>
                     <button
                         type="button"
@@ -144,7 +144,7 @@ function AuthorList() {
                             fields={[
                                 { label: "Nacionalidad", value: author.nationality || "-" },
                                 { label: "Nacimiento", value: author.birthYear || "-" },
-                                { label: "Vive", value: author.alive ? "Si" : "No" },
+                                { label: "Vive", value: author.alive ? "Sí" : "No" },
                             ]}
                             onEdit={() => navigate(`/authors/edit/${author.id}`)}
                             onDelete={() => handleDelete(author.id)}

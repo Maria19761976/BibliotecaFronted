@@ -13,6 +13,7 @@
   display: flex;
   flex-direction: column;
   justify-content: flex-end;
+  gap: 14px;
 }
 
 .badge {
@@ -23,11 +24,17 @@
   width: fit-content;
 }
 
+.main-card p {
+  color: rgba(255, 255, 255, 0.82);
+}
+
 .side .card {
   background: white;
   padding: 20px;
   border-radius: 20px;
   margin-bottom: 20px;
+  display: grid;
+  gap: 12px;
 }
 
 .green {
@@ -35,12 +42,30 @@
   color: white;
 }
 
-.green button {
-  margin-top: 10px;
-  padding: 10px;
+.main-card button,
+.side .card button {
+  width: fit-content;
+  margin-top: 4px;
+  padding: 10px 16px;
   border: none;
   border-radius: 10px;
   cursor: pointer;
+  font-weight: 600;
+}
+
+.main-card button {
+  background: #0bbf6a;
+  color: #062814;
+}
+
+.side .card button {
+  background: #0f172a;
+  color: white;
+}
+
+.green button {
+  background: white;
+  color: #0b5d3b;
 }
 
 @media (max-width: 900px) {

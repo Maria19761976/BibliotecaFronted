@@ -7,21 +7,31 @@ export default function FeatureSection() {
   return (
     <section className="features">
       <div className="main-card">
-        <span className="badge">COLECCIÓN ESPECIAL</span>
-        <h3>Manuscritos de la Era de la Ilustración</h3>
+        <span className="badge">DEMO LISTA</span>
+        <h3>Una biblioteca conectada al backend y pensada para mostrar flujo real</h3>
+        <p>
+          La Home funciona como portada útil: te lleva al catálogo, a la gestión de autores y a las acciones que
+          sí están disponibles hoy.
+        </p>
+        <button type="button" onClick={() => navigate('/books')}>
+          Ver catálogo
+        </button>
       </div>
 
       <div className="side">
         <div className="card">
-          <h4>Nuevas Adquisiciones</h4>
-          <p>Descubre los últimos títulos añadidos.</p>
+          <h4>Búsqueda rápida</h4>
+          <p>Filtra libros desde la portada y entra directamente al listado con la búsqueda aplicada.</p>
+          <button type="button" onClick={() => navigate('/books')}>
+            Ir a libros
+          </button>
         </div>
 
         <div className="card green">
-          <h4>Reserva una Sala de Estudio</h4>
-          <p>Busca libros y prepara tu próxima visita.</p>
-          <button type="button" onClick={() => navigate('/books')}>
-            Reservar ahora
+          <h4>Gestión de autores</h4>
+          <p>Consulta, crea y edita autores desde una interfaz clara y preparada para la entrega.</p>
+          <button type="button" onClick={() => navigate('/authors')}>
+            Ir a autores
           </button>
         </div>
       </div>

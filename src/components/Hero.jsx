@@ -23,10 +23,11 @@ export default function Hero() {
 
   return (
     <section className="hero">
-      <h2>Tu biblioteca digital personal.</h2>
+      <h2>Consulta y gestiona tu catálogo con rapidez.</h2>
 
       <p>
-        Explora miles de volúmenes, investigaciones y manuscritos históricos.
+        Busca libros por título, autor o ISBN y accede al catálogo para editar, crear y revisar registros
+        reales de la demo.
       </p>
 
       <form className="hero-search" onSubmit={handleSubmit}>
@@ -40,14 +41,14 @@ export default function Hero() {
       </form>
 
       <div className="categories">
-        {categories.map((c) => (
+        {categories.map((category) => (
           <button
             type="button"
-            key={c}
+            key={category}
             className="category-pill"
-            onClick={() => handleCategoryClick(c)}
+            onClick={() => handleCategoryClick(category)}
           >
-            {c}
+            {category}
           </button>
         ))}
       </div>

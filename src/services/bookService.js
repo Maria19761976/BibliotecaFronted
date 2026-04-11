@@ -1,9 +1,7 @@
 import axios from "axios";
+import { apiBaseUrl } from "./apiConfig";
 
-const baseUrl = import.meta.env.VITE_API_URL || "http://localhost:8080";
-const API_URL = `${baseUrl}/books`;
-
-
+const API_URL = `${apiBaseUrl}/books`;
 
 export const getAllBooks = async() => {
     const response = await axios.get(API_URL);

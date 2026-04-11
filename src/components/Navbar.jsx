@@ -19,7 +19,7 @@ function Navbar() {
                     </span>
                     <div className="leading-tight">
                         <p className="text-lg font-semibold tracking-tight text-slate-900">Biblioteca</p>
-                        <p className="text-sm text-slate-500">Archivo Nacional</p>
+                        <p className="text-sm text-slate-500">Catálogo y gestión</p>
                     </div>
                 </NavLink>
 

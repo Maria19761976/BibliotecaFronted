@@ -1,4 +1,4 @@
-import { useEffect, useState } from "react";
+import { useCallback, useEffect, useState } from "react";
 import { useNavigate, useParams } from "react-router-dom";
 import { createAuthor, getAuthorById, updateAuthor } from "../../services/authorService";
 
@@ -22,7 +22,7 @@ function AuthorForm() {
         alive: true,
     });
 
-    const loadAuthor = async () => {
+    const loadAuthor = useCallback(async () => {
         try {
             setFetching(true);
             setLoadError(false);
@@ -36,22 +36,22 @@ function AuthorForm() {
                 birthYear: authorData.birthYear || "",
                 alive: authorData.alive !== undefined ? authorData.alive : true,
             });
-        } catch (error) {
+        } catch (_error) {
             setLoadError(true);
             setFeedback({
                 type: "error",
-                text: "No se pudo cargar la informacion del autor. Intentalo de nuevo.",
+                text: "No se pudo cargar la información del autor. Inténtalo de nuevo.",
             });
         } finally {
             setFetching(false);
         }
-    };
+    }, [id]);
 
     useEffect(() => {
         if (id) {
             loadAuthor();
         }
-    }, [id]);
+    }, [id, loadAuthor]);
 
     const handleChange = (event) => {
         const { name, value, type, checked } = event.target;
@@ -92,10 +92,10 @@ function AuthorForm() {
                 replace: true,
                 state: { feedback: { type: "success", text: "Autor creado correctamente." } },
             });
-        } catch (error) {
+        } catch (_error) {
             setFeedback({
                 type: "error",
-                text: "No se pudo guardar el autor. Revisa los datos e intentalo de nuevo.",
+                text: "No se pudo guardar el autor. Revisa los datos e inténtalo de nuevo.",
             });
             setLoading(false);
         }
@@ -121,7 +121,7 @@ function AuthorForm() {
                         No se pudo abrir este autor
                     </h1>
                     <p className="mt-3 text-sm leading-6 text-slate-600">
-                        Comprueba la conexion o vuelve al listado para continuar con otra accion.
+                        Comprueba la conexión o vuelve al listado para continuar con otra acción.
                     </p>
                     <div className="mt-6 flex flex-col gap-3 sm:flex-row sm:justify-center">
                         <button
@@ -155,13 +155,13 @@ function AuthorForm() {
                     </h1>
                     <p className="text-sm text-slate-600">
                         {id
-                            ? "Actualiza la ficha del autor y guarda los cambios cuando este todo revisado."
+                            ? "Actualiza la ficha del autor y guarda los cambios cuando esté todo revisado."
                             : "Completa los datos del autor para crear un nuevo registro en la biblioteca."}
                     </p>
                 </div>
 
                 <div className="mt-6 rounded-2xl border border-slate-200 bg-slate-50 px-4 py-3 text-sm text-slate-600">
-                    Los campos de nombre, apellido, nacionalidad y ano de nacimiento son obligatorios.
+                    Los campos de nombre, apellido, nacionalidad y año de nacimiento son obligatorios.
                 </div>
 
                 {feedback.text && (
@@ -171,7 +171,7 @@ function AuthorForm() {
                             feedbackStyles[feedback.type] || "border-slate-200 bg-white text-slate-700"
                         }`}
                     >
-                        <p className="font-medium">No se pudo completar la accion.</p>
+                        <p className="font-medium">No se pudo completar la acción.</p>
                         <p className="mt-1">{feedback.text}</p>
                     </div>
                 )}
@@ -222,7 +222,7 @@ function AuthorForm() {
 
                             <div className="space-y-2">
                                 <label htmlFor="birthYear" className="text-sm font-medium text-slate-700">
-                                    Ano de nacimiento
+                                    Año de nacimiento
                                 </label>
                                 <input
                                     id="birthYear"

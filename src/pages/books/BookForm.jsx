@@ -1,15 +1,20 @@
-import { useState, useEffect } from "react";
+import { useEffect, useState } from "react";
 import { useNavigate, useParams } from "react-router-dom";
-import { createBook, getBookById, updateBook } from "../../services/bookService";
 import { getAllAuthors } from "../../services/authorService";
+import { createBook, getBookById, updateBook } from "../../services/bookService";
+
+const feedbackStyles = {
+    error: "border-rose-200 bg-rose-50 text-rose-900",
+};
 
 function BookForm() {
     const navigate = useNavigate();
     const { id } = useParams();
-    const [message, setMessage] = useState("");
+    const [feedback, setFeedback] = useState({ type: "", text: "" });
     const [authors, setAuthors] = useState([]);
     const [loading, setLoading] = useState(false);
     const [fetching, setFetching] = useState(false);
+    const [loadError, setLoadError] = useState(false);
 
     const [book, setBook] = useState({
         title: "",
@@ -19,38 +24,42 @@ function BookForm() {
         authorId: "",
     });
 
-    useEffect(() => {
-        const loadData = async () => {
-            try {
-                setFetching(true);
+    const loadData = async () => {
+        try {
+            setFetching(true);
+            setLoadError(false);
+            setFeedback({ type: "", text: "" });
 
-                const [authorsData, bookData] = await Promise.all([
-                    getAllAuthors(),
-                    id ? getBookById(id) : Promise.resolve(null),
-                ]);
+            const [authorsData, bookData] = await Promise.all([
+                getAllAuthors(),
+                id ? getBookById(id) : Promise.resolve(null),
+            ]);
 
-                setAuthors(authorsData);
+            setAuthors(authorsData);
 
-                if (bookData) {
-                    setBook({
-                        title: bookData.title || "",
-                        isbn: bookData.isbn || bookData.ISBN || "",
-                        publicationYear: bookData.publicationYear || "",
-                        image: bookData.image || "",
-                        authorId: bookData.author?.id || bookData.authorId || "",
-                    });
-                }
-            } catch (error) {
-                setMessage(
-                    id
-                        ? "No se pudo cargar la información del libro."
-                        : "No encontramos la información de los autores."
-                );
-            } finally {
-                setFetching(false);
+            if (bookData) {
+                setBook({
+                    title: bookData.title || "",
+                    isbn: bookData.isbn || bookData.ISBN || "",
+                    publicationYear: bookData.publicationYear || "",
+                    image: bookData.image || "",
+                    authorId: bookData.author?.id || bookData.authorId || "",
+                });
             }
-        };
+        } catch (error) {
+            setLoadError(true);
+            setFeedback({
+                type: "error",
+                text: id
+                    ? "No se pudo cargar la información del libro. Inténtalo de nuevo."
+                    : "No se pudo cargar la lista de autores. Inténtalo de nuevo.",
+            });
+        } finally {
+            setFetching(false);
+        }
+    };
 
+    useEffect(() => {
         loadData();
     }, [id]);
 
@@ -61,8 +70,12 @@ function BookForm() {
 
     const handleSubmit = async (event) => {
         event.preventDefault();
+
         if (!book.title || !book.isbn || !book.publicationYear || !book.authorId) {
-            setMessage("Por favor rellena todos los campos.");
+            setFeedback({
+                type: "error",
+                text: "Por favor, rellena todos los campos obligatorios.",
+            });
             return;
         }
 
@@ -78,20 +91,27 @@ function BookForm() {
 
         try {
             setLoading(true);
-            setMessage("");
+            setFeedback({ type: "", text: "" });
 
             if (id) {
                 await updateBook(id, bookPayload);
-                setMessage("Libro actualizado correctamente.");
-            } else {
-                await createBook(bookPayload);
-                setMessage("Libro creado correctamente.");
+                navigate("/books", {
+                    replace: true,
+                    state: { feedback: { type: "success", text: "Libro actualizado correctamente." } },
+                });
+                return;
             }
 
-            setTimeout(() => navigate("/books"), 1500);
+            await createBook(bookPayload);
+            navigate("/books", {
+                replace: true,
+                state: { feedback: { type: "success", text: "Libro creado correctamente." } },
+            });
         } catch (error) {
-            setMessage("Error al guardar el libro.");
-        } finally {
+            setFeedback({
+                type: "error",
+                text: "No se pudo guardar el libro. Revisa los datos e inténtalo de nuevo.",
+            });
             setLoading(false);
         }
     };
@@ -107,6 +127,38 @@ function BookForm() {
         );
     }
 
+    if (loadError) {
+        return (
+            <div className="mx-auto max-w-3xl px-4 py-8 sm:px-0">
+                <section className="rounded-3xl border border-rose-200 bg-white/90 p-8 text-center shadow-sm">
+                    <p className="text-sm font-medium uppercase tracking-[0.2em] text-rose-700">Libros</p>
+                    <h1 className="mt-3 text-3xl font-semibold tracking-tight text-slate-900">
+                        No se pudo abrir esta ficha
+                    </h1>
+                    <p className="mt-3 text-sm leading-6 text-slate-600">
+                        Comprueba la conexión o vuelve al listado para continuar con otra acción.
+                    </p>
+                    <div className="mt-6 flex flex-col gap-3 sm:flex-row sm:justify-center">
+                        <button
+                            type="button"
+                            onClick={loadData}
+                            className="inline-flex items-center justify-center rounded-2xl bg-emerald-700 px-5 py-3 font-medium text-white transition-all hover:-translate-y-0.5 hover:bg-emerald-800"
+                        >
+                            Reintentar
+                        </button>
+                        <button
+                            type="button"
+                            onClick={() => navigate("/books")}
+                            className="inline-flex items-center justify-center rounded-2xl border border-slate-200 bg-white px-5 py-3 font-medium text-slate-700 transition-all hover:-translate-y-0.5 hover:border-slate-300 hover:bg-slate-50"
+                        >
+                            Volver al listado
+                        </button>
+                    </div>
+                </section>
+            </div>
+        );
+    }
+
     return (
         <div className="mx-auto max-w-3xl px-4 py-8 sm:px-0">
             <section className="relative overflow-hidden rounded-3xl border border-slate-200 bg-white/85 p-6 shadow-sm backdrop-blur sm:p-8">
@@ -117,13 +169,25 @@ function BookForm() {
                         {id ? "Editar libro" : "Nuevo libro"}
                     </h1>
                     <p className="text-sm text-slate-600">
-                        Completa la información del libro para guardarlo en la biblioteca.
+                        {id
+                            ? "Actualiza la información del libro y guarda los cambios cuando esté todo revisado."
+                            : "Completa los datos del libro para crear un nuevo registro en la biblioteca."}
                     </p>
                 </div>
 
-                {message && (
-                    <div className="mt-6 rounded-2xl border border-emerald-100 bg-emerald-50 px-4 py-3 text-sm text-emerald-900">
-                        {message}
+                <div className="mt-6 rounded-2xl border border-slate-200 bg-slate-50 px-4 py-3 text-sm text-slate-600">
+                    Los campos de título, ISBN, año de publicación y autor son obligatorios.
+                </div>
+
+                {feedback.text && (
+                    <div
+                        role="alert"
+                        className={`mt-4 rounded-2xl border px-4 py-3 text-sm ${
+                            feedbackStyles[feedback.type] || "border-slate-200 bg-white text-slate-700"
+                        }`}
+                    >
+                        <p className="font-medium">No se pudo completar la acción.</p>
+                        <p className="mt-1">{feedback.text}</p>
                     </div>
                 )}
 
@@ -210,14 +274,14 @@ function BookForm() {
                                 disabled={loading}
                                 className="inline-flex items-center justify-center rounded-2xl bg-emerald-700 px-5 py-3 font-medium text-white transition-all hover:-translate-y-0.5 hover:bg-emerald-800 disabled:cursor-not-allowed disabled:bg-emerald-400"
                             >
-                                {loading ? "Guardando..." : id ? "Actualizar" : "Crear"}
+                                {loading ? "Guardando..." : id ? "Guardar cambios" : "Crear libro"}
                             </button>
                             <button
                                 type="button"
                                 onClick={() => navigate("/books")}
                                 className="inline-flex items-center justify-center rounded-2xl border border-slate-200 bg-white px-5 py-3 font-medium text-slate-700 transition-all hover:-translate-y-0.5 hover:border-slate-300 hover:bg-slate-50"
                             >
-                                Cancelar
+                                Volver al listado
                             </button>
                         </div>
                     </fieldset>

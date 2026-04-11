@@ -1,15 +1,16 @@
 import axios from "axios";
 import { apiBaseUrl } from "./apiConfig";
+import { ensureArrayResponse, ensureObjectResponse } from "./apiUtils";
 
 const API_URL = `${apiBaseUrl}/authors`;
 
 export const getAllAuthors = async() => {
     const response = await axios.get(API_URL);
-    return response.data;
+    return ensureArrayResponse(response.data, "los autores");
 };
 export const getAuthorById = async(id) => {
     const response = await axios.get(`${API_URL}/${id}`);
-    return response.data;
+    return ensureObjectResponse(response.data, "el autor");
 };
 export const createAuthor = async(author) => {
     const response = await axios.post(API_URL, author);

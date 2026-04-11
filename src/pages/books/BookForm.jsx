@@ -18,7 +18,7 @@ function BookForm() {
 
     const [book, setBook] = useState({
         title: "",
-        ISBN: "",
+        isbn: "",
         publicationYear: "",
         image: "",
         authorId: "",
@@ -40,10 +40,10 @@ function BookForm() {
             if (bookData) {
                 setBook({
                     title: bookData.title || "",
-                    ISBN: bookData.ISBN || "",
+                    isbn: bookData.isbn || bookData.ISBN || "",
                     publicationYear: bookData.publicationYear || "",
                     image: bookData.image || "",
-                    authorId: bookData.author?.id || "",
+                    authorId: bookData.author?.id || bookData.authorId || "",
                 });
             }
         } catch (error) {
@@ -51,8 +51,8 @@ function BookForm() {
             setFeedback({
                 type: "error",
                 text: id
-                    ? "No se pudo cargar la informacion del libro. Intentalo de nuevo."
-                    : "No se pudo cargar la lista de autores. Intentalo de nuevo.",
+                    ? "No se pudo cargar la información del libro. Inténtalo de nuevo."
+                    : "No se pudo cargar la lista de autores. Inténtalo de nuevo.",
             });
         } finally {
             setFetching(false);
@@ -71,18 +71,22 @@ function BookForm() {
     const handleSubmit = async (event) => {
         event.preventDefault();
 
-        if (!book.title || !book.ISBN || !book.publicationYear || !book.authorId) {
+        if (!book.title || !book.isbn || !book.publicationYear || !book.authorId) {
             setFeedback({
                 type: "error",
-                text: "Completa todos los campos obligatorios antes de guardar.",
+                text: "Por favor, rellena todos los campos obligatorios.",
             });
             return;
         }
 
         const bookPayload = {
-            ...book,
+            title: book.title,
+            isbn: book.isbn,
             publicationYear: Number(book.publicationYear),
-            authorId: Number(book.authorId),
+            image: book.image,
+            author: {
+                id: Number(book.authorId),
+            },
         };
 
         try {
@@ -106,7 +110,7 @@ function BookForm() {
         } catch (error) {
             setFeedback({
                 type: "error",
-                text: "No se pudo guardar el libro. Revisa los datos e intentalo de nuevo.",
+                text: "No se pudo guardar el libro. Revisa los datos e inténtalo de nuevo.",
             });
             setLoading(false);
         }
@@ -132,7 +136,7 @@ function BookForm() {
                         No se pudo abrir esta ficha
                     </h1>
                     <p className="mt-3 text-sm leading-6 text-slate-600">
-                        Comprueba la conexion o vuelve al listado para continuar con otra accion.
+                        Comprueba la conexión o vuelve al listado para continuar con otra acción.
                     </p>
                     <div className="mt-6 flex flex-col gap-3 sm:flex-row sm:justify-center">
                         <button
@@ -166,13 +170,13 @@ function BookForm() {
                     </h1>
                     <p className="text-sm text-slate-600">
                         {id
-                            ? "Actualiza la informacion del libro y guarda los cambios cuando este todo revisado."
+                            ? "Actualiza la información del libro y guarda los cambios cuando esté todo revisado."
                             : "Completa los datos del libro para crear un nuevo registro en la biblioteca."}
                     </p>
                 </div>
 
                 <div className="mt-6 rounded-2xl border border-slate-200 bg-slate-50 px-4 py-3 text-sm text-slate-600">
-                    Los campos de titulo, ISBN, ano de publicacion y autor son obligatorios.
+                    Los campos de título, ISBN, año de publicación y autor son obligatorios.
                 </div>
 
                 {feedback.text && (
@@ -182,7 +186,7 @@ function BookForm() {
                             feedbackStyles[feedback.type] || "border-slate-200 bg-white text-slate-700"
                         }`}
                     >
-                        <p className="font-medium">No se pudo completar la accion.</p>
+                        <p className="font-medium">No se pudo completar la acción.</p>
                         <p className="mt-1">{feedback.text}</p>
                     </div>
                 )}
@@ -192,7 +196,7 @@ function BookForm() {
                         <div className="grid gap-5 md:grid-cols-2">
                             <div className="space-y-2 md:col-span-2">
                                 <label htmlFor="title" className="text-sm font-medium text-slate-700">
-                                    Titulo
+                                    Título
                                 </label>
                                 <input
                                     id="title"
@@ -204,13 +208,13 @@ function BookForm() {
                             </div>
 
                             <div className="space-y-2">
-                                <label htmlFor="ISBN" className="text-sm font-medium text-slate-700">
+                                <label htmlFor="isbn" className="text-sm font-medium text-slate-700">
                                     ISBN
                                 </label>
                                 <input
-                                    id="ISBN"
-                                    name="ISBN"
-                                    value={book.ISBN}
+                                    id="isbn"
+                                    name="isbn"
+                                    value={book.isbn}
                                     onChange={handleChange}
                                     className="w-full rounded-2xl border border-slate-200 bg-white px-4 py-3 text-slate-900 outline-none transition placeholder:text-slate-400 focus:border-emerald-600 focus:ring-4 focus:ring-emerald-600/10 disabled:cursor-not-allowed disabled:bg-slate-100"
                                 />
@@ -218,7 +222,7 @@ function BookForm() {
 
                             <div className="space-y-2">
                                 <label htmlFor="publicationYear" className="text-sm font-medium text-slate-700">
-                                    Ano de publicacion
+                                    Año de publicación
                                 </label>
                                 <input
                                     id="publicationYear"

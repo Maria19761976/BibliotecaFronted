@@ -143,8 +143,8 @@ function BookList() {
                             title={book.title}
                             imageUrl={book.image}
                             fields={[
-                                { label: "ISBN", value: book.ISBN || "-" },
-                                { label: "Ano", value: book.publicationYear || "-" },
+                                { label: "ISBN", value: book.isbn || "-" },
+                                { label: "Año", value: book.publicationYear || "-" },
                                 {
                                     label: "Autor",
                                     value: `${book.author?.name || ""} ${book.author?.surname || ""}`.trim() || "-",

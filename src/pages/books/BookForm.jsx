@@ -13,7 +13,7 @@ function BookForm() {
 
     const [book, setBook] = useState({
         title: "",
-        ISBN: "",
+        isbn: "",
         publicationYear: "",
         image: "",
         authorId: "",
@@ -34,10 +34,10 @@ function BookForm() {
                 if (bookData) {
                     setBook({
                         title: bookData.title || "",
-                        ISBN: bookData.ISBN || "",
+                        isbn: bookData.isbn || bookData.ISBN || "",
                         publicationYear: bookData.publicationYear || "",
                         image: bookData.image || "",
-                        authorId: bookData.author?.id || "",
+                        authorId: bookData.author?.id || bookData.authorId || "",
                     });
                 }
             } catch (error) {
@@ -61,15 +61,19 @@ function BookForm() {
 
     const handleSubmit = async (event) => {
         event.preventDefault();
-        if (!book.title || !book.ISBN || !book.publicationYear || !book.authorId) {
+        if (!book.title || !book.isbn || !book.publicationYear || !book.authorId) {
             setMessage("Por favor rellena todos los campos.");
             return;
         }
 
         const bookPayload = {
-            ...book,
+            title: book.title,
+            isbn: book.isbn,
             publicationYear: Number(book.publicationYear),
-            authorId: Number(book.authorId),
+            image: book.image,
+            author: {
+                id: Number(book.authorId),
+            },
         };
 
         try {
@@ -140,13 +144,13 @@ function BookForm() {
                             </div>
 
                             <div className="space-y-2">
-                                <label htmlFor="ISBN" className="text-sm font-medium text-slate-700">
+                                <label htmlFor="isbn" className="text-sm font-medium text-slate-700">
                                     ISBN
                                 </label>
                                 <input
-                                    id="ISBN"
-                                    name="ISBN"
-                                    value={book.ISBN}
+                                    id="isbn"
+                                    name="isbn"
+                                    value={book.isbn}
                                     onChange={handleChange}
                                     className="w-full rounded-2xl border border-slate-200 bg-white px-4 py-3 text-slate-900 outline-none transition placeholder:text-slate-400 focus:border-emerald-600 focus:ring-4 focus:ring-emerald-600/10 disabled:cursor-not-allowed disabled:bg-slate-100"
                                 />

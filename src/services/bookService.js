@@ -5,7 +5,6 @@ const API_URL = `${baseUrl}/books`;
 
 
 
-
 export const getAllBooks = async() => {
     const response = await axios.get(API_URL);
     return response.data;

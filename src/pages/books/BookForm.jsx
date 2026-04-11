@@ -35,15 +35,16 @@ function BookForm() {
                 id ? getBookById(id) : Promise.resolve(null),
             ]);
 
-            setAuthors(authorsData);
+            const loadedAuthors = Array.isArray(authorsData) ? authorsData : [];
+            setAuthors(loadedAuthors);
 
             if (bookData) {
                 setBook({
                     title: bookData.title || "",
-                    isbn: bookData.isbn || bookData.ISBN || "",
+                    isbn: bookData.isbn || "",
                     publicationYear: bookData.publicationYear || "",
                     image: bookData.image || "",
-                    authorId: bookData.author?.id || bookData.authorId || "",
+                    authorId: bookData.author?.id ? String(bookData.author.id) : "",
                 });
             }
         } catch (error) {

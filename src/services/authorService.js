@@ -1,6 +1,7 @@
 import axios from "axios";
 
-const API_URL = "http://localhost:8080/authors";
+const baseUrl = import.meta.env.VITE_API_URL || "http://localhost:8080";
+const API_URL = `${baseUrl}/authors`;
 
 export const getAllAuthors = async() => {
     const response = await axios.get(API_URL);

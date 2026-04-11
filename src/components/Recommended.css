@@ -1,0 +1,41 @@
+.recommended {
+  padding: 40px;
+}
+
+.header {
+  display: flex;
+  justify-content: space-between;
+}
+
+.list {
+  display: flex;
+  gap: 20px;
+  margin-top: 20px;
+}
+
+.book {
+  width: 130px;
+}
+
+.cover {
+  width: 100%;
+  height: 180px;
+  background: #ddd;
+  border-radius: 10px;
+}
+
+.book p {
+  margin-top: 8px;
+  font-size: 14px;
+}
+
+@media (max-width: 768px) {
+  .recommended {
+    padding: 24px 0;
+  }
+
+  .list {
+    overflow-x: auto;
+    padding-bottom: 8px;
+  }
+}

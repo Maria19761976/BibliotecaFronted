@@ -1,25 +1,27 @@
 import axios from "axios";
 
 const baseUrl = import.meta.env.VITE_API_URL || "http://localhost:8080";
-const API_URL = `${baseUrl}/authors`;
+const API_URL = `${baseUrl}/books`;
 
-export const getAllAuthors = async() => {
+
+
+export const getAllBooks = async() => {
     const response = await axios.get(API_URL);
     return response.data;
 };
-export const getAuthorById = async(id) => {
+export const getBookById = async(id) => {
     const response = await axios.get(`${API_URL}/${id}`);
     return response.data;
 };
-export const createAuthor = async(author) => {
-    const response = await axios.post(API_URL, author);
+export const createBook = async(book) => {
+    const response = await axios.post(API_URL, book);
     return response.data;
 };
-export const updateAuthor = async(id, author) => {
-    const response = await axios.put(`${API_URL}/${id}`, author);
+export const updateBook = async(id, book) => {
+    const response = await axios.put(`${API_URL}/${id}`, book);
     return response.data;
 };
-export const deleteAuthor = async(id) => {
+export const deleteBook = async(id) => {
     const response = await axios.delete(`${API_URL}/${id}`);
     return response.data;
 };

@@ -1,0 +1,51 @@
+.features {
+  display: grid;
+  grid-template-columns: 2fr 1fr;
+  gap: 20px;
+  padding: 40px;
+}
+
+.main-card {
+  background: black;
+  color: white;
+  padding: 30px;
+  border-radius: 20px;
+  display: flex;
+  flex-direction: column;
+  justify-content: flex-end;
+}
+
+.badge {
+  background: #0bbf6a;
+  padding: 5px 10px;
+  border-radius: 6px;
+  font-size: 12px;
+  width: fit-content;
+}
+
+.side .card {
+  background: white;
+  padding: 20px;
+  border-radius: 20px;
+  margin-bottom: 20px;
+}
+
+.green {
+  background: #0b5d3b;
+  color: white;
+}
+
+.green button {
+  margin-top: 10px;
+  padding: 10px;
+  border: none;
+  border-radius: 10px;
+  cursor: pointer;
+}
+
+@media (max-width: 900px) {
+  .features {
+    grid-template-columns: 1fr;
+    padding: 24px 0;
+  }
+}

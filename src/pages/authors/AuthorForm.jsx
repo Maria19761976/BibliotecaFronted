@@ -1,5 +1,6 @@
 import { useCallback, useEffect, useState } from "react";
 import { useNavigate, useParams } from "react-router-dom";
+import { getApiErrorMessage } from "../../services/apiUtils";
 import { createAuthor, getAuthorById, updateAuthor } from "../../services/authorService";
 
 const feedbackStyles = {
@@ -36,11 +37,11 @@ function AuthorForm() {
                 birthYear: authorData.birthYear || "",
                 alive: authorData.alive !== undefined ? authorData.alive : true,
             });
-        } catch (_error) {
+        } catch (error) {
             setLoadError(true);
             setFeedback({
                 type: "error",
-                text: "No se pudo cargar la información del autor. Inténtalo de nuevo.",
+                text: getApiErrorMessage(error, "No se pudo cargar la información del autor. Inténtalo de nuevo."),
             });
         } finally {
             setFetching(false);
@@ -61,7 +62,20 @@ function AuthorForm() {
     const handleSubmit = async (event) => {
         event.preventDefault();
 
-        if (!author.name || !author.surname || !author.nationality || !author.birthYear) {
+        const normalizedAuthor = {
+            name: author.name.trim(),
+            surname: author.surname.trim(),
+            nationality: author.nationality.trim(),
+            birthYear: author.birthYear.toString().trim(),
+            alive: author.alive,
+        };
+
+        if (
+            !normalizedAuthor.name ||
+            !normalizedAuthor.surname ||
+            !normalizedAuthor.nationality ||
+            !normalizedAuthor.birthYear
+        ) {
             setFeedback({
                 type: "error",
                 text: "Completa todos los campos obligatorios antes de guardar.",
@@ -69,9 +83,19 @@ function AuthorForm() {
             return;
         }
 
+        const parsedBirthYear = Number(normalizedAuthor.birthYear);
+
+        if (!Number.isInteger(parsedBirthYear) || parsedBirthYear <= 0) {
+            setFeedback({
+                type: "error",
+                text: "El año de nacimiento debe ser un número válido.",
+            });
+            return;
+        }
+
         const authorPayload = {
-            ...author,
-            birthYear: Number(author.birthYear),
+            ...normalizedAuthor,
+            birthYear: parsedBirthYear,
         };
 
         try {
@@ -92,10 +116,10 @@ function AuthorForm() {
                 replace: true,
                 state: { feedback: { type: "success", text: "Autor creado correctamente." } },
             });
-        } catch (_error) {
+        } catch (error) {
             setFeedback({
                 type: "error",
-                text: "No se pudo guardar el autor. Revisa los datos e inténtalo de nuevo.",
+                text: getApiErrorMessage(error, "No se pudo guardar el autor. Revisa los datos e inténtalo de nuevo."),
             });
             setLoading(false);
         }
@@ -188,6 +212,7 @@ function AuthorForm() {
                                     name="name"
                                     value={author.name}
                                     onChange={handleChange}
+                                    required
                                     className="w-full rounded-2xl border border-slate-200 bg-white px-4 py-3 text-slate-900 outline-none transition placeholder:text-slate-400 focus:border-emerald-600 focus:ring-4 focus:ring-emerald-600/10 disabled:cursor-not-allowed disabled:bg-slate-100"
                                 />
                             </div>
@@ -201,6 +226,7 @@ function AuthorForm() {
                                     name="surname"
                                     value={author.surname}
                                     onChange={handleChange}
+                                    required
                                     className="w-full rounded-2xl border border-slate-200 bg-white px-4 py-3 text-slate-900 outline-none transition placeholder:text-slate-400 focus:border-emerald-600 focus:ring-4 focus:ring-emerald-600/10 disabled:cursor-not-allowed disabled:bg-slate-100"
                                 />
                             </div>
@@ -216,6 +242,7 @@ function AuthorForm() {
                                     name="nationality"
                                     value={author.nationality}
                                     onChange={handleChange}
+                                    required
                                     className="w-full rounded-2xl border border-slate-200 bg-white px-4 py-3 text-slate-900 outline-none transition placeholder:text-slate-400 focus:border-emerald-600 focus:ring-4 focus:ring-emerald-600/10 disabled:cursor-not-allowed disabled:bg-slate-100"
                                 />
                             </div>
@@ -230,6 +257,9 @@ function AuthorForm() {
                                     type="number"
                                     value={author.birthYear}
                                     onChange={handleChange}
+                                    min="1"
+                                    step="1"
+                                    required
                                     className="w-full rounded-2xl border border-slate-200 bg-white px-4 py-3 text-slate-900 outline-none transition placeholder:text-slate-400 focus:border-emerald-600 focus:ring-4 focus:ring-emerald-600/10 disabled:cursor-not-allowed disabled:bg-slate-100"
                                 />
                             </div>

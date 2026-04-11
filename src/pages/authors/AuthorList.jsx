@@ -1,6 +1,7 @@
 import { useEffect, useState } from "react";
 import { useLocation, useNavigate } from "react-router-dom";
 import InfoCard from "../../components/InfoCard";
+import { getApiErrorMessage } from "../../services/apiUtils";
 import { deleteAuthor, getAllAuthors } from "../../services/authorService";
 
 const feedbackStyles = {
@@ -19,15 +20,14 @@ function AuthorList() {
         try {
             setLoading(true);
             const response = await getAllAuthors();
-            const loadedAuthors = Array.isArray(response) ? response : [];
-            setAuthors(loadedAuthors);
+            setAuthors(response);
             setFeedback((currentFeedback) =>
                 currentFeedback.type === "error" ? { type: "", text: "" } : currentFeedback
             );
-        } catch (_error) {
+        } catch (error) {
             setFeedback({
                 type: "error",
-                text: "No se pudo cargar el listado de autores. Inténtalo de nuevo.",
+                text: getApiErrorMessage(error, "No se pudo cargar el listado de autores. Inténtalo de nuevo."),
             });
         } finally {
             setLoading(false);
@@ -54,10 +54,10 @@ function AuthorList() {
                     text: "Autor eliminado correctamente.",
                 });
                 await loadAuthors();
-            } catch (_error) {
+            } catch (error) {
                 setFeedback({
                     type: "error",
-                    text: "No se pudo eliminar el autor. Inténtalo de nuevo.",
+                    text: getApiErrorMessage(error, "No se pudo eliminar el autor. Inténtalo de nuevo."),
                 });
             }
         }

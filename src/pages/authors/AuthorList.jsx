@@ -19,7 +19,8 @@ function AuthorList() {
         try {
             setLoading(true);
             const response = await getAllAuthors();
-            setAuthors(response.data || response);
+            const loadedAuthors = Array.isArray(response) ? response : [];
+            setAuthors(loadedAuthors);
             setFeedback((currentFeedback) =>
                 currentFeedback.type === "error" ? { type: "", text: "" } : currentFeedback
             );

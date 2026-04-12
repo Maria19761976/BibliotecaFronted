@@ -5,7 +5,6 @@ import './Hero.css'
 export default function Hero() {
   const [searchQuery, setSearchQuery] = useState('')
   const navigate = useNavigate()
-  const categories = ['Ciencia', 'Literatura', 'Historia', 'Artes', 'Filosofía']
 
   const handleSubmit = (event) => {
     event.preventDefault()
@@ -15,10 +14,6 @@ export default function Hero() {
     } else {
       navigate('/books')
     }
-  }
-
-  const handleCategoryClick = (category) => {
-    navigate(`/books?q=${encodeURIComponent(category)}`)
   }
 
   return (
@@ -39,19 +34,6 @@ export default function Hero() {
         />
         <button type="submit">Buscar</button>
       </form>
-
-      <div className="categories">
-        {categories.map((category) => (
-          <button
-            type="button"
-            key={category}
-            className="category-pill"
-            onClick={() => handleCategoryClick(category)}
-          >
-            {category}
-          </button>
-        ))}
-      </div>
     </section>
   )
 }

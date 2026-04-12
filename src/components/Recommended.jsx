@@ -5,28 +5,32 @@ export default function Recommended() {
   const quickActions = [
     {
       title: 'Explorar libros',
-      description: 'Abre el catálogo completo y revisa los resultados filtrados o el listado general.',
+      description: 'Recorre la colección completa y entra a cada ficha con una vista clara y ordenada.',
       to: '/books',
       cta: 'Abrir libros',
     },
     {
       title: 'Añadir un libro',
-      description: 'Accede al formulario para crear un nuevo registro y asignarle un autor existente.',
+      description: 'Incorpora nuevas lecturas a la biblioteca y relaciónalas con el autor correspondiente.',
       to: '/books/new',
       cta: 'Crear libro',
     },
     {
       title: 'Gestionar autores',
-      description: 'Consulta autores, actualiza sus fichas o crea uno nuevo desde el panel correspondiente.',
+      description: 'Consulta perfiles, revisa sus obras y mantén al día la información de cada autor.',
       to: '/authors',
-      cta: 'Ver autores',
+      cta: 'Abrir autores',
     },
   ]
 
   return (
     <section className="recommended">
       <div className="header">
-        <h3>Accesos rápidos para la demo</h3>
+        <div className="header-copy">
+          <p className="section-kicker">Atajos útiles</p>
+          <h3>Accesos rápidos</h3>
+          <p>Mueve lo importante sin rodeos y entra en las secciones que más se consultan.</p>
+        </div>
         <Link to="/books" className="see-all">
           Abrir catálogo
         </Link>
@@ -35,7 +39,6 @@ export default function Recommended() {
       <div className="list">
         {quickActions.map((action) => (
           <Link key={action.title} to={action.to} className="quick-card">
-            <span className="quick-label">Acción</span>
             <h4>{action.title}</h4>
             <p>{action.description}</p>
             <span className="quick-link">{action.cta}</span>

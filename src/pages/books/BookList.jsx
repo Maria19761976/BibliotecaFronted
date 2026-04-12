@@ -89,9 +89,9 @@ function BookList() {
     }
 
     const hasError = feedback.type === "error";
-    const showEmptyState = books.length === 0 && !hasError;
+    const showEmptyCatalog = allBooks.length === 0 && !hasError;
+    const showSearchEmptyState = Boolean(query) && allBooks.length > 0 && books.length === 0 && !hasError;
     const showBanner = feedback.text && (feedback.type === "success" || books.length > 0);
-    const isFiltering = Boolean(query);
 
     return (
         <section className="space-y-6 py-4">
@@ -140,7 +140,7 @@ function BookList() {
                         Reintentar
                     </button>
                 </div>
-            ) : showEmptyState && isFiltering ? (
+            ) : showSearchEmptyState ? (
                 <div className="rounded-3xl border border-dashed border-slate-300 bg-white/80 p-8 text-center shadow-sm">
                     <p className="text-lg font-semibold text-slate-900">No hay resultados para “{query}”</p>
                     <p className="mt-2 text-sm text-slate-600">
@@ -154,7 +154,7 @@ function BookList() {
                         Ver todos los libros
                     </button>
                 </div>
-            ) : showEmptyState ? (
+            ) : showEmptyCatalog ? (
                 <div className="rounded-3xl border border-dashed border-slate-300 bg-white/80 p-8 text-center shadow-sm">
                     <p className="text-lg font-semibold text-slate-900">Aún no hay libros registrados</p>
                     <p className="mt-2 text-sm text-slate-600">

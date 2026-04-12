@@ -20,6 +20,7 @@ function AuthorForm() {
         surname: "",
         nationality: "",
         birthYear: "",
+        image: "",
         alive: true,
     });
 
@@ -35,6 +36,7 @@ function AuthorForm() {
                 surname: authorData.surname || "",
                 nationality: authorData.nationality || "",
                 birthYear: authorData.birthYear || "",
+                image: authorData.image || "",
                 alive: authorData.alive !== undefined ? authorData.alive : true,
             });
         } catch (error) {
@@ -67,6 +69,7 @@ function AuthorForm() {
             surname: author.surname.trim(),
             nationality: author.nationality.trim(),
             birthYear: author.birthYear.toString().trim(),
+            image: author.image.trim(),
             alive: author.alive,
         };
 
@@ -263,6 +266,19 @@ function AuthorForm() {
                                     className="w-full rounded-2xl border border-slate-200 bg-white px-4 py-3 text-slate-900 outline-none transition placeholder:text-slate-400 focus:border-emerald-600 focus:ring-4 focus:ring-emerald-600/10 disabled:cursor-not-allowed disabled:bg-slate-100"
                                 />
                             </div>
+                        </div>
+
+                        <div className="space-y-2">
+                            <label htmlFor="image" className="text-sm font-medium text-slate-700">
+                                URL de la imagen
+                            </label>
+                            <input
+                                id="image"
+                                name="image"
+                                value={author.image}
+                                onChange={handleChange}
+                                className="w-full rounded-2xl border border-slate-200 bg-white px-4 py-3 text-slate-900 outline-none transition placeholder:text-slate-400 focus:border-emerald-600 focus:ring-4 focus:ring-emerald-600/10 disabled:cursor-not-allowed disabled:bg-slate-100"
+                            />
                         </div>
 
                         <label className="flex items-center gap-3 rounded-2xl border border-slate-200 bg-slate-50 px-4 py-4 text-sm font-medium text-slate-700">

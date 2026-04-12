@@ -1,11 +1,22 @@
+import { useEffect, useState } from "react";
+
 function InfoCard({ title, imageUrl, fields = [], onEdit, onDelete }) {
+    const [imageFailed, setImageFailed] = useState(false);
+
+    useEffect(() => {
+        setImageFailed(false);
+    }, [imageUrl]);
+
+    const showImage = Boolean(imageUrl) && !imageFailed;
+
     return (
         <article className="overflow-hidden rounded-3xl border border-slate-200 bg-white shadow-sm transition-transform duration-200 hover:-translate-y-1 hover:shadow-xl">
-            {imageUrl ? (
+            {showImage ? (
                 <img
                     className="h-44 w-full object-cover"
                     src={imageUrl}
                     alt={title}
+                    onError={() => setImageFailed(true)}
                 />
             ) : (
                 <div className="flex h-44 w-full items-center justify-center bg-slate-100 text-sm font-medium text-slate-500">

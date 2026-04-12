@@ -207,7 +207,8 @@ Comprueba que tienes Node.js 18 o superior instalado ejecutando `node -v`. Si ti
 
 **Vista principal — listado de libros**
 
-> _Añadir captura de pantalla aquí_
+<img width="222" height="320" alt="Captura readme" src="https://github.com/user-attachments/assets/8640ce18-c844-4eb7-b4cc-a0948dc6a2ae" />
+
 
 **Vista de detalle / formulario de edición**
 

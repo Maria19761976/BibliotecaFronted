@@ -142,6 +142,7 @@ function AuthorList() {
                         <InfoCard
                             key={author.id}
                             title={`${author.name} ${author.surname}`}
+                            imageUrl={author.image}
                             fields={[
                                 { label: "Nacionalidad", value: author.nationality || "-" },
                                 { label: "Nacimiento", value: author.birthYear || "-" },

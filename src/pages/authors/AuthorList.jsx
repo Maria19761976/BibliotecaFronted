@@ -9,12 +9,26 @@ const feedbackStyles = {
     error: "border-rose-200 bg-rose-50 text-rose-900",
 };
 
+const authorImageOverrides = {
+    "Gabriel Garcia Marquez": "https://commons.wikimedia.org/wiki/Special:FilePath/Gabriel_Garcia_Marquez_1984.jpg",
+};
+
 function AuthorList() {
     const navigate = useNavigate();
     const location = useLocation();
     const [authors, setAuthors] = useState([]);
     const [loading, setLoading] = useState(true);
     const [feedback, setFeedback] = useState({ type: "", text: "" });
+
+    const resolveAuthorImage = (author) => {
+        const normalizedImage = typeof author.image === "string" ? author.image.trim() : "";
+
+        if (normalizedImage) {
+            return normalizedImage;
+        }
+
+        return authorImageOverrides[`${author.name} ${author.surname}`] || "";
+    };
 
     const loadAuthors = async () => {
         try {
@@ -142,7 +156,7 @@ function AuthorList() {
                         <InfoCard
                             key={author.id}
                             title={`${author.name} ${author.surname}`}
-                            imageUrl={author.image}
+                            imageUrl={resolveAuthorImage(author)}
                             fields={[
                                 { label: "Nacionalidad", value: author.nationality || "-" },
                                 { label: "Nacimiento", value: author.birthYear || "-" },

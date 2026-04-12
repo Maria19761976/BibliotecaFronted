@@ -19,6 +19,20 @@ function BookList() {
     const location = useLocation();
     const query = searchParams.get("q")?.trim().toLowerCase() || "";
 
+    const resolveBookImage = (book) => {
+        const normalizedImage = typeof book.image === "string" ? book.image.trim() : "";
+
+        if (normalizedImage) {
+            return normalizedImage;
+        }
+
+        if (book.isbn) {
+            return `https://covers.openlibrary.org/b/isbn/${encodeURIComponent(book.isbn)}-L.jpg`;
+        }
+
+        return "";
+    };
+
     const loadBooks = async () => {
         try {
             setLoading(true);
@@ -174,7 +188,7 @@ function BookList() {
                         <InfoCard
                             key={book.id}
                             title={book.title}
-                            imageUrl={book.image}
+                            imageUrl={resolveBookImage(book)}
                             fields={[
                                 { label: "ISBN", value: book.isbn || "-" },
                                 { label: "Año", value: book.publicationYear || "-" },

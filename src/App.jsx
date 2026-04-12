@@ -1,121 +1,61 @@
-import { useState } from 'react'
-import reactLogo from './assets/react.svg'
-import viteLogo from './assets/vite.svg'
-import heroImg from './assets/hero.png'
-import './App.css'
+import { BrowserRouter, Link, Route, Routes } from "react-router-dom";
+import Home from "./pages/Home";
+import "./styles/global.css";
+import AuthorList from "./pages/authors/AuthorList";
+import AuthorForm from "./pages/authors/AuthorForm";
+import BookList from "./pages/books/BookList";
+import BookForm from "./pages/books/BookForm";
+import Layout from "./components/Layout";
 
-function App() {
-  const [count, setCount] = useState(0)
+function NotFoundPage() {
+    return (
+        <section className="mx-auto flex min-h-[55vh] max-w-3xl items-center justify-center py-10">
+            <div className="w-full rounded-3xl border border-slate-200 bg-white/90 p-8 text-center shadow-sm sm:p-10">
+                <p className="text-sm font-medium uppercase tracking-[0.2em] text-emerald-700">Error 404</p>
+                <h1 className="mt-3 text-3xl font-semibold tracking-tight text-slate-900 sm:text-4xl">
+                    Página no encontrada
+                </h1>
+                <p className="mt-3 text-sm leading-6 text-slate-600 sm:text-base">
+                    La ruta que has intentado abrir no existe o ya no está disponible. Puedes volver al inicio
+                    o continuar desde una de las secciones principales.
+                </p>
 
-  return (
-    <>
-      <section id="center">
-        <div className="hero">
-          <img src={heroImg} className="base" width="170" height="179" alt="" />
-          <img src={reactLogo} className="framework" alt="React logo" />
-          <img src={viteLogo} className="vite" alt="Vite logo" />
-        </div>
-        <div>
-          <h1>Get started</h1>
-          <p>
-            Edit <code>src/App.jsx</code> and save to test <code>HMR</code>
-          </p>
-        </div>
-        <button
-          className="counter"
-          onClick={() => setCount((count) => count + 1)}
-        >
-          Count is {count}
-        </button>
-      </section>
-
-      <div className="ticks"></div>
-
-      <section id="next-steps">
-        <div id="docs">
-          <svg className="icon" role="presentation" aria-hidden="true">
-            <use href="/icons.svg#documentation-icon"></use>
-          </svg>
-          <h2>Documentation</h2>
-          <p>Your questions, answered</p>
-          <ul>
-            <li>
-              <a href="https://vite.dev/" target="_blank">
-                <img className="logo" src={viteLogo} alt="" />
-                Explore Vite
-              </a>
-            </li>
-            <li>
-              <a href="https://react.dev/" target="_blank">
-                <img className="button-icon" src={reactLogo} alt="" />
-                Learn more
-              </a>
-            </li>
-          </ul>
-        </div>
-        <div id="social">
-          <svg className="icon" role="presentation" aria-hidden="true">
-            <use href="/icons.svg#social-icon"></use>
-          </svg>
-          <h2>Connect with us</h2>
-          <p>Join the Vite community</p>
-          <ul>
-            <li>
-              <a href="https://github.com/vitejs/vite" target="_blank">
-                <svg
-                  className="button-icon"
-                  role="presentation"
-                  aria-hidden="true"
-                >
-                  <use href="/icons.svg#github-icon"></use>
-                </svg>
-                GitHub
-              </a>
-            </li>
-            <li>
-              <a href="https://chat.vite.dev/" target="_blank">
-                <svg
-                  className="button-icon"
-                  role="presentation"
-                  aria-hidden="true"
-                >
-                  <use href="/icons.svg#discord-icon"></use>
-                </svg>
-                Discord
-              </a>
-            </li>
-            <li>
-              <a href="https://x.com/vite_js" target="_blank">
-                <svg
-                  className="button-icon"
-                  role="presentation"
-                  aria-hidden="true"
-                >
-                  <use href="/icons.svg#x-icon"></use>
-                </svg>
-                X.com
-              </a>
-            </li>
-            <li>
-              <a href="https://bsky.app/profile/vite.dev" target="_blank">
-                <svg
-                  className="button-icon"
-                  role="presentation"
-                  aria-hidden="true"
-                >
-                  <use href="/icons.svg#bluesky-icon"></use>
-                </svg>
-                Bluesky
-              </a>
-            </li>
-          </ul>
-        </div>
-      </section>
-
-      <div className="ticks"></div>
-      <section id="spacer"></section>
-    </>
-  )
+                <div className="mt-8 flex flex-col gap-3 sm:flex-row sm:justify-center">
+                    <Link
+                        to="/"
+                        className="inline-flex items-center justify-center rounded-2xl bg-emerald-700 px-5 py-3 font-medium text-white transition-all hover:-translate-y-0.5 hover:bg-emerald-800"
+                    >
+                        Ir al inicio
+                    </Link>
+                    <Link
+                        to="/authors"
+                        className="inline-flex items-center justify-center rounded-2xl border border-slate-200 bg-white px-5 py-3 font-medium text-slate-700 transition-all hover:-translate-y-0.5 hover:border-slate-300 hover:bg-slate-50"
+                    >
+                        Ver autores
+                    </Link>
+                </div>
+            </div>
+        </section>
+    );
 }
 
-export default App
+function App() {
+    return (
+        <BrowserRouter>
+            <Layout>
+                <Routes>
+                    <Route path="/" element={<Home />} />
+                    <Route path="/authors" element={<AuthorList />} />
+                    <Route path="/authors/new" element={<AuthorForm />} />
+                    <Route path="/authors/edit/:id" element={<AuthorForm />} />
+                    <Route path="/books" element={<BookList />} />
+                    <Route path="/books/new" element={<BookForm />} />
+                    <Route path="/books/edit/:id" element={<BookForm />} />
+                    <Route path="*" element={<NotFoundPage />} />
+                </Routes>
+            </Layout>
+        </BrowserRouter>
+    );
+}
+
+export default App;

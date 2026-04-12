@@ -1,9 +1,26 @@
 import axios from "axios";
+import { apiBaseUrl } from "./apiConfig";
+import { ensureArrayResponse, ensureObjectResponse } from "./apiUtils";
 
-const API_URL = "http://localhost:8080/authors";
+const API_URL = `${apiBaseUrl}/authors`;
 
-export const getAllAuthors = () => axios.get(API_URL);
-export const getAuthorById = (id) => axios.get(`${API_URL}/${id}`);
-export const createAuthor = (author) => axios.post(API_URL, author);
-export const updateAuthor = (id, author) => axios.put(`${API_URL}/${id}`, author);
-export const deleteAuthor = (id) => axios.delete(`${API_URL}/${id}`);
+export const getAllAuthors = async() => {
+    const response = await axios.get(API_URL);
+    return ensureArrayResponse(response.data, "los autores");
+};
+export const getAuthorById = async(id) => {
+    const response = await axios.get(`${API_URL}/${id}`);
+    return ensureObjectResponse(response.data, "el autor");
+};
+export const createAuthor = async(author) => {
+    const response = await axios.post(API_URL, author);
+    return response.data;
+};
+export const updateAuthor = async(id, author) => {
+    const response = await axios.put(`${API_URL}/${id}`, author);
+    return response.data;
+};
+export const deleteAuthor = async(id) => {
+    const response = await axios.delete(`${API_URL}/${id}`);
+    return response.data;
+};

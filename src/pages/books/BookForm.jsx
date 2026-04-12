@@ -1,49 +1,62 @@
 import { useCallback, useEffect, useState } from "react";
 import { useNavigate, useParams } from "react-router-dom";
 import { getApiErrorMessage } from "../../services/apiUtils";
-import { createAuthor, getAuthorById, updateAuthor } from "../../services/authorService";
+import { getAllAuthors } from "../../services/authorService";
+import { createBook, getBookById, updateBook } from "../../services/bookService";
 
 const feedbackStyles = {
     error: "border-rose-200 bg-rose-50 text-rose-900",
 };
 
-function AuthorForm() {
+function BookForm() {
     const navigate = useNavigate();
     const { id } = useParams();
     const [feedback, setFeedback] = useState({ type: "", text: "" });
+    const [authors, setAuthors] = useState([]);
     const [loading, setLoading] = useState(false);
     const [fetching, setFetching] = useState(false);
     const [loadError, setLoadError] = useState(false);
 
-    const [author, setAuthor] = useState({
-        name: "",
-        surname: "",
-        nationality: "",
-        birthYear: "",
+    const [book, setBook] = useState({
+        title: "",
+        isbn: "",
+        publicationYear: "",
         image: "",
-        alive: true,
+        authorId: "",
     });
 
-    const loadAuthor = useCallback(async () => {
+    const loadData = useCallback(async () => {
         try {
             setFetching(true);
             setLoadError(false);
             setFeedback({ type: "", text: "" });
 
-            const authorData = await getAuthorById(id);
-            setAuthor({
-                name: authorData.name || "",
-                surname: authorData.surname || "",
-                nationality: authorData.nationality || "",
-                birthYear: authorData.birthYear || "",
-                image: authorData.image || "",
-                alive: authorData.alive !== undefined ? authorData.alive : true,
-            });
+            const [authorsData, bookData] = await Promise.all([
+                getAllAuthors(),
+                id ? getBookById(id) : Promise.resolve(null),
+            ]);
+
+            setAuthors(authorsData);
+
+            if (bookData) {
+                setBook({
+                    title: bookData.title || "",
+                    isbn: bookData.isbn || "",
+                    publicationYear: bookData.publicationYear || "",
+                    image: bookData.image || "",
+                    authorId: bookData.author?.id ? String(bookData.author.id) : "",
+                });
+            }
         } catch (error) {
             setLoadError(true);
             setFeedback({
                 type: "error",
-                text: getApiErrorMessage(error, "No se pudo cargar la información del autor. Inténtalo de nuevo."),
+                text: getApiErrorMessage(
+                    error,
+                    id
+                        ? "No se pudo cargar la información del libro. Inténtalo de nuevo."
+                        : "No se pudo cargar la lista de autores. Inténtalo de nuevo."
+                ),
             });
         } finally {
             setFetching(false);
@@ -51,54 +64,65 @@ function AuthorForm() {
     }, [id]);
 
     useEffect(() => {
-        if (id) {
-            loadAuthor();
-        }
-    }, [id, loadAuthor]);
+        loadData();
+    }, [loadData]);
 
     const handleChange = (event) => {
-        const { name, value, type, checked } = event.target;
-        setAuthor({ ...author, [name]: type === "checkbox" ? checked : value });
+        const { name, value } = event.target;
+        setBook({ ...book, [name]: value });
     };
 
     const handleSubmit = async (event) => {
         event.preventDefault();
 
-        const normalizedAuthor = {
-            name: author.name.trim(),
-            surname: author.surname.trim(),
-            nationality: author.nationality.trim(),
-            birthYear: author.birthYear.toString().trim(),
-            image: author.image.trim(),
-            alive: author.alive,
+        const normalizedBook = {
+            title: book.title.trim(),
+            isbn: book.isbn.trim(),
+            publicationYear: book.publicationYear.toString().trim(),
+            image: book.image.trim(),
+            authorId: book.authorId.toString().trim(),
         };
 
         if (
-            !normalizedAuthor.name ||
-            !normalizedAuthor.surname ||
-            !normalizedAuthor.nationality ||
-            !normalizedAuthor.birthYear
+            !normalizedBook.title ||
+            !normalizedBook.isbn ||
+            !normalizedBook.publicationYear ||
+            !normalizedBook.authorId
         ) {
             setFeedback({
                 type: "error",
-                text: "Completa todos los campos obligatorios antes de guardar.",
+                text: "Por favor, rellena todos los campos obligatorios.",
             });
             return;
         }
 
-        const parsedBirthYear = Number(normalizedAuthor.birthYear);
+        const parsedPublicationYear = Number(normalizedBook.publicationYear);
+        const parsedAuthorId = Number(normalizedBook.authorId);
 
-        if (!Number.isInteger(parsedBirthYear) || parsedBirthYear <= 0) {
+        if (!Number.isInteger(parsedPublicationYear) || parsedPublicationYear <= 0) {
             setFeedback({
                 type: "error",
-                text: "El año de nacimiento debe ser un número válido.",
+                text: "El año de publicación debe ser un número válido.",
             });
             return;
         }
 
-        const authorPayload = {
-            ...normalizedAuthor,
-            birthYear: parsedBirthYear,
+        if (!Number.isInteger(parsedAuthorId) || parsedAuthorId <= 0) {
+            setFeedback({
+                type: "error",
+                text: "Selecciona un autor válido antes de guardar.",
+            });
+            return;
+        }
+
+        const bookPayload = {
+            title: normalizedBook.title,
+            isbn: normalizedBook.isbn,
+            publicationYear: parsedPublicationYear,
+            image: normalizedBook.image,
+            author: {
+                id: parsedAuthorId,
+            },
         };
 
         try {
@@ -106,23 +130,23 @@ function AuthorForm() {
             setFeedback({ type: "", text: "" });
 
             if (id) {
-                await updateAuthor(id, authorPayload);
-                navigate("/authors", {
+                await updateBook(id, bookPayload);
+                navigate("/books", {
                     replace: true,
-                    state: { feedback: { type: "success", text: "Autor actualizado correctamente." } },
+                    state: { feedback: { type: "success", text: "Libro actualizado correctamente." } },
                 });
                 return;
             }
 
-            await createAuthor(authorPayload);
-            navigate("/authors", {
+            await createBook(bookPayload);
+            navigate("/books", {
                 replace: true,
-                state: { feedback: { type: "success", text: "Autor creado correctamente." } },
+                state: { feedback: { type: "success", text: "Libro creado correctamente." } },
             });
         } catch (error) {
             setFeedback({
                 type: "error",
-                text: getApiErrorMessage(error, "No se pudo guardar el autor. Revisa los datos e inténtalo de nuevo."),
+                text: getApiErrorMessage(error, "No se pudo guardar el libro. Revisa los datos e inténtalo de nuevo."),
             });
             setLoading(false);
         }
@@ -132,8 +156,8 @@ function AuthorForm() {
         return (
             <div className="mx-auto flex min-h-[40vh] max-w-3xl items-center justify-center px-4 py-10">
                 <div className="rounded-3xl border border-slate-200 bg-white/85 px-8 py-10 text-center shadow-sm">
-                    <p className="text-sm font-medium uppercase tracking-[0.2em] text-emerald-700">Autores</p>
-                    <p className="mt-2 text-slate-600">Cargando datos del autor...</p>
+                    <p className="text-sm font-medium uppercase tracking-[0.2em] text-emerald-700">Libros</p>
+                    <p className="mt-2 text-slate-600">Cargando datos del libro...</p>
                 </div>
             </div>
         );
@@ -143,9 +167,9 @@ function AuthorForm() {
         return (
             <div className="mx-auto max-w-3xl px-4 py-8 sm:px-0">
                 <section className="rounded-3xl border border-rose-200 bg-white/90 p-8 text-center shadow-sm">
-                    <p className="text-sm font-medium uppercase tracking-[0.2em] text-rose-700">Autores</p>
+                    <p className="text-sm font-medium uppercase tracking-[0.2em] text-rose-700">Libros</p>
                     <h1 className="mt-3 text-3xl font-semibold tracking-tight text-slate-900">
-                        No se pudo abrir este autor
+                        No se pudo abrir esta ficha
                     </h1>
                     <p className="mt-3 text-sm leading-6 text-slate-600">
                         Comprueba la conexión o vuelve al listado para continuar con otra acción.
@@ -153,14 +177,46 @@ function AuthorForm() {
                     <div className="mt-6 flex flex-col gap-3 sm:flex-row sm:justify-center">
                         <button
                             type="button"
-                            onClick={loadAuthor}
+                            onClick={loadData}
                             className="inline-flex items-center justify-center rounded-2xl bg-emerald-700 px-5 py-3 font-medium text-white transition-all hover:-translate-y-0.5 hover:bg-emerald-800"
                         >
                             Reintentar
                         </button>
                         <button
                             type="button"
-                            onClick={() => navigate("/authors")}
+                            onClick={() => navigate("/books")}
+                            className="inline-flex items-center justify-center rounded-2xl border border-slate-200 bg-white px-5 py-3 font-medium text-slate-700 transition-all hover:-translate-y-0.5 hover:border-slate-300 hover:bg-slate-50"
+                        >
+                            Volver al listado
+                        </button>
+                    </div>
+                </section>
+            </div>
+        );
+    }
+
+    if (authors.length === 0) {
+        return (
+            <div className="mx-auto max-w-3xl px-4 py-8 sm:px-0">
+                <section className="rounded-3xl border border-slate-200 bg-white/90 p-8 text-center shadow-sm">
+                    <p className="text-sm font-medium uppercase tracking-[0.2em] text-emerald-700">Libros</p>
+                    <h1 className="mt-3 text-3xl font-semibold tracking-tight text-slate-900">
+                        No hay autores disponibles
+                    </h1>
+                    <p className="mt-3 text-sm leading-6 text-slate-600">
+                        Necesitas al menos un autor registrado antes de crear o editar libros.
+                    </p>
+                    <div className="mt-6 flex flex-col gap-3 sm:flex-row sm:justify-center">
+                        <button
+                            type="button"
+                            onClick={() => navigate("/authors/new")}
+                            className="inline-flex items-center justify-center rounded-2xl bg-emerald-700 px-5 py-3 font-medium text-white transition-all hover:-translate-y-0.5 hover:bg-emerald-800"
+                        >
+                            Crear autor
+                        </button>
+                        <button
+                            type="button"
+                            onClick={() => navigate("/books")}
                             className="inline-flex items-center justify-center rounded-2xl border border-slate-200 bg-white px-5 py-3 font-medium text-slate-700 transition-all hover:-translate-y-0.5 hover:border-slate-300 hover:bg-slate-50"
                         >
                             Volver al listado
@@ -176,19 +232,19 @@ function AuthorForm() {
             <section className="relative overflow-hidden rounded-3xl border border-slate-200 bg-white/85 p-6 shadow-sm backdrop-blur sm:p-8">
                 <div className="absolute inset-x-0 top-0 h-1 bg-gradient-to-r from-emerald-500 via-emerald-600 to-teal-500" />
                 <div className="space-y-2">
-                    <p className="text-sm font-medium uppercase tracking-[0.2em] text-emerald-700">Autores</p>
+                    <p className="text-sm font-medium uppercase tracking-[0.2em] text-emerald-700">Libros</p>
                     <h1 className="text-3xl font-semibold tracking-tight text-slate-900">
-                        {id ? "Editar autor" : "Nuevo autor"}
+                        {id ? "Editar libro" : "Nuevo libro"}
                     </h1>
                     <p className="text-sm text-slate-600">
                         {id
-                            ? "Actualiza la ficha del autor y guarda los cambios cuando esté todo revisado."
-                            : "Completa los datos del autor para crear un nuevo registro en la biblioteca."}
+                            ? "Actualiza la información del libro y guarda los cambios cuando esté todo revisado."
+                            : "Completa los datos del libro para crear un nuevo registro en la biblioteca."}
                     </p>
                 </div>
 
                 <div className="mt-6 rounded-2xl border border-slate-200 bg-slate-50 px-4 py-3 text-sm text-slate-600">
-                    Los campos de nombre, apellido, nacionalidad y año de nacimiento son obligatorios.
+                    Los campos de título, ISBN, año de publicación y autor son obligatorios.
                 </div>
 
                 {feedback.text && (
@@ -206,14 +262,14 @@ function AuthorForm() {
                 <form onSubmit={handleSubmit} className="mt-6">
                     <fieldset disabled={loading} className="grid gap-5 border-0 p-0">
                         <div className="grid gap-5 md:grid-cols-2">
-                            <div className="space-y-2">
-                                <label htmlFor="name" className="text-sm font-medium text-slate-700">
-                                    Nombre
+                            <div className="space-y-2 md:col-span-2">
+                                <label htmlFor="title" className="text-sm font-medium text-slate-700">
+                                    Título
                                 </label>
                                 <input
-                                    id="name"
-                                    name="name"
-                                    value={author.name}
+                                    id="title"
+                                    name="title"
+                                    value={book.title}
                                     onChange={handleChange}
                                     required
                                     className="w-full rounded-2xl border border-slate-200 bg-white px-4 py-3 text-slate-900 outline-none transition placeholder:text-slate-400 focus:border-emerald-600 focus:ring-4 focus:ring-emerald-600/10 disabled:cursor-not-allowed disabled:bg-slate-100"
@@ -221,29 +277,13 @@ function AuthorForm() {
                             </div>
 
                             <div className="space-y-2">
-                                <label htmlFor="surname" className="text-sm font-medium text-slate-700">
-                                    Apellido
+                                <label htmlFor="isbn" className="text-sm font-medium text-slate-700">
+                                    ISBN
                                 </label>
                                 <input
-                                    id="surname"
-                                    name="surname"
-                                    value={author.surname}
-                                    onChange={handleChange}
-                                    required
-                                    className="w-full rounded-2xl border border-slate-200 bg-white px-4 py-3 text-slate-900 outline-none transition placeholder:text-slate-400 focus:border-emerald-600 focus:ring-4 focus:ring-emerald-600/10 disabled:cursor-not-allowed disabled:bg-slate-100"
-                                />
-                            </div>
-                        </div>
-
-                        <div className="grid gap-5 md:grid-cols-2">
-                            <div className="space-y-2">
-                                <label htmlFor="nationality" className="text-sm font-medium text-slate-700">
-                                    Nacionalidad
-                                </label>
-                                <input
-                                    id="nationality"
-                                    name="nationality"
-                                    value={author.nationality}
+                                    id="isbn"
+                                    name="isbn"
+                                    value={book.isbn}
                                     onChange={handleChange}
                                     required
                                     className="w-full rounded-2xl border border-slate-200 bg-white px-4 py-3 text-slate-900 outline-none transition placeholder:text-slate-400 focus:border-emerald-600 focus:ring-4 focus:ring-emerald-600/10 disabled:cursor-not-allowed disabled:bg-slate-100"
@@ -251,14 +291,14 @@ function AuthorForm() {
                             </div>
 
                             <div className="space-y-2">
-                                <label htmlFor="birthYear" className="text-sm font-medium text-slate-700">
-                                    Año de nacimiento
+                                <label htmlFor="publicationYear" className="text-sm font-medium text-slate-700">
+                                    Año de publicación
                                 </label>
                                 <input
-                                    id="birthYear"
-                                    name="birthYear"
+                                    id="publicationYear"
+                                    name="publicationYear"
                                     type="number"
-                                    value={author.birthYear}
+                                    value={book.publicationYear}
                                     onChange={handleChange}
                                     min="1"
                                     step="1"
@@ -275,22 +315,32 @@ function AuthorForm() {
                             <input
                                 id="image"
                                 name="image"
-                                value={author.image}
+                                value={book.image}
                                 onChange={handleChange}
                                 className="w-full rounded-2xl border border-slate-200 bg-white px-4 py-3 text-slate-900 outline-none transition placeholder:text-slate-400 focus:border-emerald-600 focus:ring-4 focus:ring-emerald-600/10 disabled:cursor-not-allowed disabled:bg-slate-100"
                             />
                         </div>
 
-                        <label className="flex items-center gap-3 rounded-2xl border border-slate-200 bg-slate-50 px-4 py-4 text-sm font-medium text-slate-700">
-                            <input
-                                name="alive"
-                                type="checkbox"
-                                checked={author.alive}
+                        <div className="space-y-2">
+                            <label htmlFor="authorId" className="text-sm font-medium text-slate-700">
+                                Autor
+                            </label>
+                            <select
+                                id="authorId"
+                                name="authorId"
+                                value={book.authorId}
                                 onChange={handleChange}
-                                className="h-4 w-4 rounded border-slate-300 text-emerald-700 focus:ring-emerald-600"
-                            />
-                            Vive actualmente
-                        </label>
+                                required
+                                className="w-full rounded-2xl border border-slate-200 bg-white px-4 py-3 text-slate-900 outline-none transition placeholder:text-slate-400 focus:border-emerald-600 focus:ring-4 focus:ring-emerald-600/10 disabled:cursor-not-allowed disabled:bg-slate-100"
+                            >
+                                <option value="">Selecciona un autor</option>
+                                {authors.map((author) => (
+                                    <option key={author.id} value={author.id}>
+                                        {author.name} {author.surname}
+                                    </option>
+                                ))}
+                            </select>
+                        </div>
 
                         <div className="flex flex-col gap-3 pt-2 sm:flex-row sm:justify-end">
                             <button
@@ -298,11 +348,11 @@ function AuthorForm() {
                                 disabled={loading}
                                 className="inline-flex items-center justify-center rounded-2xl bg-emerald-700 px-5 py-3 font-medium text-white transition-all hover:-translate-y-0.5 hover:bg-emerald-800 disabled:cursor-not-allowed disabled:bg-emerald-400"
                             >
-                                {loading ? "Guardando..." : id ? "Guardar cambios" : "Crear autor"}
+                                {loading ? "Guardando..." : id ? "Guardar cambios" : "Crear libro"}
                             </button>
                             <button
                                 type="button"
-                                onClick={() => navigate("/authors")}
+                                onClick={() => navigate("/books")}
                                 className="inline-flex items-center justify-center rounded-2xl border border-slate-200 bg-white px-5 py-3 font-medium text-slate-700 transition-all hover:-translate-y-0.5 hover:border-slate-300 hover:bg-slate-50"
                             >
                                 Volver al listado
@@ -315,4 +365,4 @@ function AuthorForm() {
     );
 }
 
-export default AuthorForm;
+export default BookForm;

@@ -1,0 +1,26 @@
+import axios from "axios";
+import { apiBaseUrl } from "./apiConfig";
+import { ensureArrayResponse, ensureObjectResponse } from "./apiUtils";
+
+const API_URL = `${apiBaseUrl}/books`;
+
+export const getAllBooks = async() => {
+    const response = await axios.get(API_URL);
+    return ensureArrayResponse(response.data, "los libros");
+};
+export const getBookById = async(id) => {
+    const response = await axios.get(`${API_URL}/${id}`);
+    return ensureObjectResponse(response.data, "el libro");
+};
+export const createBook = async(book) => {
+    const response = await axios.post(API_URL, book);
+    return response.data;
+};
+export const updateBook = async(id, book) => {
+    const response = await axios.put(`${API_URL}/${id}`, book);
+    return response.data;
+};
+export const deleteBook = async(id) => {
+    const response = await axios.delete(`${API_URL}/${id}`);
+    return response.data;
+};

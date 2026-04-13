@@ -205,14 +205,16 @@ Comprueba que tienes Node.js 18 o superior instalado ejecutando `node -v`. Si ti
 
 ## Capturas de pantalla
 
-**Vista principal — listado de libros**
-
-<img width="222" height="320" alt="Captura readme" src="https://github.com/user-attachments/assets/8640ce18-c844-4eb7-b4cc-a0948dc6a2ae" />
+**Listado de libros**
 
 
-**Vista de detalle / formulario de edición**
+<img width="387" height="380" alt="Capturami" src="https://github.com/user-attachments/assets/1152e84d-6d38-4b6b-ad02-d0439127b535" />
 
-> _Añadir captura de pantalla aquí_
+
+**Listado de autores**
+
+<img width="387" height="380" alt="image" src="https://github.com/user-attachments/assets/242d9096-992c-4e99-b355-e7b7cba2867b" />
+
 
 ---
 

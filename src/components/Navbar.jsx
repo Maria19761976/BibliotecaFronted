@@ -18,7 +18,7 @@ function Navbar() {
                         B
                     </span>
                     <div className="leading-tight">
-                        <p className="text-lg font-semibold tracking-tight text-slate-900">Biblioteca</p>
+                        <p className="text-lg font-semibold tracking-tight text-slate-900">Bibliotech</p>
                         <p className="text-sm text-slate-500">Libros y autores al día</p>
                     </div>
                 </NavLink>
